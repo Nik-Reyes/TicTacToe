@@ -28,7 +28,7 @@ const gameController = (() => {
     currentMarker: "",
   };
 
-  const checkIfThreeInARow = (arr) => {
+  const threeInARow = (arr) => {
     if (arr.includes("")) return false;
     return arr.every((cell, i, arr) => cell === arr[0]);
   };
@@ -43,7 +43,7 @@ const gameController = (() => {
   const checkRows = (gameboard) => {
     for (let i = 0; i < gameboard.getBoard().length; i += 3) {
       const [first, second, third] = gameboard.getBoard().slice(i, i + 3);
-      if (checkIfThreeInARow([first, second, third])) {
+      if (threeInARow([first, second, third])) {
         assignWinner(first);
         return true;
       }
@@ -60,7 +60,7 @@ const gameController = (() => {
       const second = gameboard.getBoard().slice(idx_2, idx_2 + 1)[0];
       const third = gameboard.getBoard().slice(idx_3, idx_3 + 1)[0];
 
-      if (checkIfThreeInARow([first, second, third])) {
+      if (threeInARow([first, second, third])) {
         assignWinner(first);
         return true;
       }
@@ -72,12 +72,12 @@ const gameController = (() => {
     const [zeroth, , , , fourth, , , , eigth] = gameboard.getBoard();
     const [, , second, , , , sixth] = gameboard.getBoard();
 
-    if (checkIfThreeInARow([zeroth, fourth, eigth])) {
+    if (threeInARow([zeroth, fourth, eigth])) {
       assignWinner(zeroth);
       return true;
     }
 
-    if (checkIfThreeInARow([second, fourth, sixth])) {
+    if (threeInARow([second, fourth, sixth])) {
       assignWinner(second);
       return true;
     }
@@ -167,16 +167,23 @@ let cell = "";
 do {
   cell = prompt("Enter which cell you'd like to mark");
   const board = gameboard.getBoard();
-  board.splice(cell, 1, gameController.getCurrentMarker());
-  gameboard.updateBoard(board);
-  console.log(gameboard.getBoard());
-  gameController.scanForWin();
-
-  playerOne.getTurn()
-    ? gameController.switchPlayer(playerTwo, playerOne)
-    : gameController.switchPlayer(playerOne, playerTwo);
-} while (gameController.getWinner() === "" && !gameController.checkForDraw());
+  if (board.at(cell) === "") {
+    board.splice(cell, 1, gameController.getCurrentMarker());
+    gameboard.updateBoard(board);
+    console.log(gameboard.getBoard());
+    if (gameController.scanForWin() || gameController.checkForDraw()) {
+      break;
+    }
+    playerOne.getTurn()
+      ? gameController.switchPlayer(playerTwo, playerOne)
+      : gameController.switchPlayer(playerOne, playerTwo);
+  } else {
+    console.log("Cannot mark a filled cell");
+  }
+} while (true);
 console.log(
   "Winner: ",
-  gameController.getWinner() ? gameController.getWinner() : "It's a draw!"
+  gameController.getWinner() !== ""
+    ? gameController.getWinner()
+    : "It's a draw!"
 );
