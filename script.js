@@ -1,6 +1,6 @@
 // GAMEBOARD IIFE //
 const gameboard = (() => {
-  let board = ["", "", "O", "", "O", "", "O", "", ""];
+  let board = ["", "", "", "", "", "", "", "", ""];
 
   const updateBoard = (newBoard) => (board = newBoard);
   const getBoard = () => board;
@@ -10,32 +10,26 @@ const gameboard = (() => {
 
 // PLAYER FACTORY //
 const newPlayer = function (name, marker) {
+  let turn = false;
   const getName = () => name;
   const getMarker = () => marker;
-  return { getName, getMarker };
+  const toggleTurn = () => (turn = turn ? false : true);
+  const getTurn = () => turn;
+  return { getName, getMarker, toggleTurn, getTurn };
 };
 
-const playerOne = newPlayer("Nik", "X");
-const playerTwo = newPlayer("Computer", "O");
-
 // GAME CONTROLLER IIFE CONTROLS GAME //
-// game controller checks for a win, a tie, restarts the game,
-// clears the gameboard on restart, keeps track of how many times each player has won (scoreboard),
-// toggles/decides whos turn it is.
-// Game controller is essentially the referee
-
 const gameController = (() => {
   const game = {
     playerOneScore: 0,
     playerTwoScore: 0,
-    playerOneTurn: "playerOne",
-    playerTwoTurn: "playerTwo",
-    turn: "",
     winner: "",
     isDraw: false,
+    currentMarker: "",
   };
 
-  const arrIsMatching = (arr) => {
+  const checkIfThreeInARow = (arr) => {
+    if (arr.includes("")) return false;
     return arr.every((cell, i, arr) => cell === arr[0]);
   };
 
@@ -49,7 +43,7 @@ const gameController = (() => {
   const checkRows = (gameboard) => {
     for (let i = 0; i < gameboard.getBoard().length; i += 3) {
       const [first, second, third] = gameboard.getBoard().slice(i, i + 3);
-      if (arrIsMatching([first, second, third])) {
+      if (checkIfThreeInARow([first, second, third])) {
         assignWinner(first);
         return true;
       }
@@ -66,7 +60,7 @@ const gameController = (() => {
       const second = gameboard.getBoard().slice(idx_2, idx_2 + 1)[0];
       const third = gameboard.getBoard().slice(idx_3, idx_3 + 1)[0];
 
-      if (arrIsMatching([first, second, third])) {
+      if (checkIfThreeInARow([first, second, third])) {
         assignWinner(first);
         return true;
       }
@@ -78,12 +72,12 @@ const gameController = (() => {
     const [zeroth, , , , fourth, , , , eigth] = gameboard.getBoard();
     const [, , second, , , , sixth] = gameboard.getBoard();
 
-    if (arrIsMatching([zeroth, fourth, eigth])) {
+    if (checkIfThreeInARow([zeroth, fourth, eigth])) {
       assignWinner(zeroth);
       return true;
     }
 
-    if (arrIsMatching([second, fourth, sixth])) {
+    if (checkIfThreeInARow([second, fourth, sixth])) {
       assignWinner(second);
       return true;
     }
@@ -91,7 +85,7 @@ const gameController = (() => {
   };
 
   const scanForWin = () => {
-    // scans every time the player/computer add a marker
+    // scans for a win every time the player/computer adds a marker
     if (
       checkRows(gameboard) ||
       checkCols(gameboard) ||
@@ -110,8 +104,6 @@ const gameController = (() => {
     clearBoard();
     resetScore();
     game.winner = "";
-    game.playerOneTurn = "playerOne";
-    game.playerTwoTurn = "playerTwo";
   };
 
   const updateScore = () => {
@@ -119,27 +111,72 @@ const gameController = (() => {
       ? game.playerOneScore++
       : game.playerTwoScore++;
   };
+
   const resetScore = () => {
     game.playerOneScore = 0;
     game.playerTwoScore = 0;
   };
-  const updateTurn = () => {
-    game.turn = game.playerOneTurn ? game.playerOneTurn : game.playerTwoTurn;
-  };
-  const getTurn = () => game.turn;
+
   const getWinner = () => game.winner;
+
+  const checkForFullBoard = (gameboard) => {
+    return gameboard.getBoard().every((cell) => cell !== "");
+  };
+
+  const checkForDraw = () => {
+    if (checkForFullBoard(gameboard)) {
+      console.log("Draw!");
+      return true;
+    }
+    return false;
+  };
+
+  const getCurrentMarker = () => game.currentMarker;
+  const updateCurrentMarker = (newMarker) => (game.currentMarker = newMarker);
+
+  const intializeGame = (playerOne) => {
+    playerOne.toggleTurn();
+    updateCurrentMarker(playerOne.getMarker());
+    resetGame();
+  };
+
+  const switchPlayer = (player, otherPlayer) => {
+    player.toggleTurn();
+    otherPlayer.toggleTurn();
+    updateCurrentMarker(player.getMarker());
+  };
 
   return {
     clearBoard,
     scanForWin,
     resetGame,
     updateScore,
-    updateTurn,
-    getTurn,
     getWinner,
+    checkForDraw,
+    intializeGame,
+    getCurrentMarker,
+    switchPlayer,
   };
 })();
 
-console.log(gameboard.getBoard());
-gameController.scanForWin();
-console.log(gameController.getWinner());
+const playerOne = newPlayer("Player 1", "X");
+const playerTwo = newPlayer("Player 2", "O");
+gameController.intializeGame(playerOne);
+
+let cell = "";
+do {
+  cell = prompt("Enter which cell you'd like to mark");
+  const board = gameboard.getBoard();
+  board.splice(cell, 1, gameController.getCurrentMarker());
+  gameboard.updateBoard(board);
+  console.log(gameboard.getBoard());
+  gameController.scanForWin();
+
+  playerOne.getTurn()
+    ? gameController.switchPlayer(playerTwo, playerOne)
+    : gameController.switchPlayer(playerOne, playerTwo);
+} while (gameController.getWinner() === "" && !gameController.checkForDraw());
+console.log(
+  "Winner: ",
+  gameController.getWinner() ? gameController.getWinner() : "It's a draw!"
+);
