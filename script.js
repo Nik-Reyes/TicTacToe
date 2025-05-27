@@ -1,6 +1,6 @@
 // GAMEBOARD IIFE //
 const gameboard = (() => {
-  let board = ["", "O", "", "", "O", "", "", "O", ""];
+  let board = ["", "", "O", "", "O", "", "O", "", ""];
 
   const updateBoard = (newBoard) => (board = newBoard);
   const getBoard = () => board;
@@ -46,20 +46,18 @@ const gameController = (() => {
         : playerTwo.getName();
   };
 
-  const clearBoard = () => {
-    gameboard.updateBoard(gameboard.getBoard().map(() => ""));
-  };
-
-  const scanForWin = () => {
-    // check for a winner in each row
+  const checkRows = (gameboard) => {
     for (let i = 0; i < gameboard.getBoard().length; i += 3) {
       const [first, second, third] = gameboard.getBoard().slice(i, i + 3);
       if (arrIsMatching([first, second, third])) {
         assignWinner(first);
-        return;
+        return true;
       }
     }
-    // check for a winner in each column
+    return false;
+  };
+
+  const checkCols = (gameboard) => {
     for (let i = 0; i < 3; i++) {
       const idx_1 = i;
       const idx_2 = idx_1 + 3;
@@ -70,18 +68,42 @@ const gameController = (() => {
 
       if (arrIsMatching([first, second, third])) {
         assignWinner(first);
-        return;
+        return true;
       }
     }
-    // if neither the col/row loop found a winner, then check the diagonals
+    return false;
+  };
 
-    game.isDraw = true;
+  const checkDiagonals = (gameboard) => {
+    const [zeroth, , , , fourth, , , , eigth] = gameboard.getBoard();
+    const [, , second, , , , sixth] = gameboard.getBoard();
 
-    // if there is a winner (determine who the winner is by the marker)
-    // return true
-    //assign winner string
-    // if there are still cells to fill AND there is no winner, return false;
-    // if all cells are filled AND there is no winner, then game is a draw
+    if (arrIsMatching([zeroth, fourth, eigth])) {
+      assignWinner(zeroth);
+      return true;
+    }
+
+    if (arrIsMatching([second, fourth, sixth])) {
+      assignWinner(second);
+      return true;
+    }
+    return false;
+  };
+
+  const scanForWin = () => {
+    // scans every time the player/computer add a marker
+    if (
+      checkRows(gameboard) ||
+      checkCols(gameboard) ||
+      checkDiagonals(gameboard)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const clearBoard = () => {
+    gameboard.updateBoard(gameboard.getBoard().map(() => ""));
   };
 
   const resetGame = () => {
@@ -121,23 +143,3 @@ const gameController = (() => {
 console.log(gameboard.getBoard());
 gameController.scanForWin();
 console.log(gameController.getWinner());
-// CHECK WINNER BY COLUMN LOGIC //
-// const [first, second, third] = gameboard.getBoard().slice(0, 0 + 3);
-// const [fourth, fifth, sixth] = gameboard.getBoard().slice(3, 3 + 3);
-// const [seventh, eight, ninth] = gameboard.getBoard().slice(6, 6 + 3);
-
-// loop 3 times
-// first iteration: i = 0
-// first = i; --0
-// second = first + 3; --3
-// third = second + 3; --6
-
-// second iteration: i = 1
-// first = i; --1`
-// second = first + 3; --4
-// third = second + 3; --7
-
-// third iteration: i = 2
-// first = i; --2
-// second = first + 3; --5
-// third = second + 3; --8
