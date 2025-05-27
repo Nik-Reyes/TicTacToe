@@ -28,6 +28,47 @@ const gameController = (() => {
     currentMarker: "",
   };
 
+  // GETTER FUNCTIONS //
+  const getWinner = () => game.winner;
+  const getCurrentMarker = () => game.currentMarker;
+  const getDrawState = () => game.isDraw;
+
+  // SETTER FUNCTIONS //
+  const clearBoard = () => {
+    gameboard.updateBoard(gameboard.getBoard().map(() => ""));
+  };
+
+  const updateCurrentMarker = (newMarker) => (game.currentMarker = newMarker);
+  const updateScore = () => {
+    game.winner === playerOne.getName()
+      ? game.playerOneScore++
+      : game.playerTwoScore++;
+  };
+
+  const resetGame = () => {
+    clearBoard();
+    resetScore();
+    game.winner = "";
+  };
+
+  const resetScore = () => {
+    game.playerOneScore = 0;
+    game.playerTwoScore = 0;
+  };
+
+  const intializeGame = (playerOne) => {
+    playerOne.toggleTurn();
+    updateCurrentMarker(playerOne.getMarker());
+    resetGame();
+  };
+
+  const switchPlayer = (player, otherPlayer) => {
+    player.toggleTurn();
+    otherPlayer.toggleTurn();
+    updateCurrentMarker(player.getMarker());
+  };
+
+  // UTILITY FUNCTIONS //
   const threeInARow = (arr) => {
     if (arr.includes("")) return false;
     return arr.every((cell, i, arr) => cell === arr[0]);
@@ -96,66 +137,28 @@ const gameController = (() => {
     return false;
   };
 
-  const clearBoard = () => {
-    gameboard.updateBoard(gameboard.getBoard().map(() => ""));
-  };
-
-  const resetGame = () => {
-    clearBoard();
-    resetScore();
-    game.winner = "";
-  };
-
-  const updateScore = () => {
-    game.winner === playerOne.name
-      ? game.playerOneScore++
-      : game.playerTwoScore++;
-  };
-
-  const resetScore = () => {
-    game.playerOneScore = 0;
-    game.playerTwoScore = 0;
-  };
-
-  const getWinner = () => game.winner;
-
   const checkForFullBoard = (gameboard) => {
     return gameboard.getBoard().every((cell) => cell !== "");
   };
 
   const checkForDraw = () => {
     if (checkForFullBoard(gameboard)) {
-      console.log("Draw!");
+      game.isDraw = true;
       return true;
     }
     return false;
   };
 
-  const getCurrentMarker = () => game.currentMarker;
-  const updateCurrentMarker = (newMarker) => (game.currentMarker = newMarker);
-
-  const intializeGame = (playerOne) => {
-    playerOne.toggleTurn();
-    updateCurrentMarker(playerOne.getMarker());
-    resetGame();
-  };
-
-  const switchPlayer = (player, otherPlayer) => {
-    player.toggleTurn();
-    otherPlayer.toggleTurn();
-    updateCurrentMarker(player.getMarker());
-  };
-
   return {
-    clearBoard,
-    scanForWin,
     resetGame,
+    scanForWin,
     updateScore,
     getWinner,
     checkForDraw,
     intializeGame,
     getCurrentMarker,
     switchPlayer,
+    getDrawState,
   };
 })();
 
@@ -187,3 +190,6 @@ console.log(
     ? gameController.getWinner()
     : "It's a draw!"
 );
+
+if (gameController.getWinner() !== "") {
+}
