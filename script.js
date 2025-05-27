@@ -1,6 +1,6 @@
 // GAMEBOARD IIFE //
 const gameboard = (() => {
-  let board = ["X", "X", "O", "X", "", "O", "X", "O", "X"];
+  let board = ["", "O", "", "", "O", "", "", "O", ""];
 
   const updateBoard = (newBoard) => (board = newBoard);
   const getBoard = () => board;
@@ -35,28 +35,31 @@ const gameController = (() => {
     isDraw: false,
   };
 
-  const clearBoard = () =>
+  const arrIsMatching = (arr) => {
+    return arr.every((cell, i, arr) => cell === arr[0]);
+  };
+
+  const assignWinner = (first) => {
+    game.winner =
+      first === playerOne.getMarker()
+        ? playerOne.getName()
+        : playerTwo.getName();
+  };
+
+  const clearBoard = () => {
     gameboard.updateBoard(gameboard.getBoard().map(() => ""));
+  };
+
   const scanForWin = () => {
-    // check for a winner
+    // check for a winner in each row
     for (let i = 0; i < gameboard.getBoard().length; i += 3) {
       const [first, second, third] = gameboard.getBoard().slice(i, i + 3);
-      if ([first, second, third].every((cell, i, row) => cell === row[0])) {
-        game.winner =
-          first === playerOne.getMarker()
-            ? playerOne.getName()
-            : playerTwo.getName();
-        console.log(
-          `the winner is ${
-            first === playerOne.getMarker()
-              ? playerOne.getName()
-              : playerTwo.getName()
-          }`
-        );
+      if (arrIsMatching([first, second, third])) {
+        assignWinner(first);
         return;
       }
     }
-
+    // check for a winner in each column
     for (let i = 0; i < 3; i++) {
       const idx_1 = i;
       const idx_2 = idx_1 + 3;
@@ -65,21 +68,12 @@ const gameController = (() => {
       const second = gameboard.getBoard().slice(idx_2, idx_2 + 1)[0];
       const third = gameboard.getBoard().slice(idx_3, idx_3 + 1)[0];
 
-      if ([first, second, third].every((cell, i, col) => cell === col[0])) {
-        game.winner =
-          first === playerOne.getMarker()
-            ? playerOne.getName()
-            : playerTwo.getName();
-        console.log(
-          `the winner is ${
-            first === playerOne.getMarker()
-              ? playerOne.getName()
-              : playerTwo.getName()
-          }`
-        );
+      if (arrIsMatching([first, second, third])) {
+        assignWinner(first);
         return;
       }
     }
+    // if neither the col/row loop found a winner, then check the diagonals
 
     game.isDraw = true;
 
