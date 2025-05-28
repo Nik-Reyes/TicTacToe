@@ -15,7 +15,8 @@ const newPlayer = function (name, marker) {
   const getMarker = () => marker;
   const toggleTurn = () => (turn = turn ? false : true);
   const getTurn = () => turn;
-  return { getName, getMarker, toggleTurn, getTurn };
+  const resetTurn = () => (turn = false);
+  return { getName, getMarker, toggleTurn, getTurn, resetTurn };
 };
 
 // GAME CONTROLLER IIFE CONTROLS GAME //
@@ -32,6 +33,10 @@ const gameController = (() => {
   const getWinner = () => game.winner;
   const getCurrentMarker = () => game.currentMarker;
   const getDrawState = () => game.isDraw;
+  const getScore = () => ({
+    p1Score: game.playerOneScore,
+    p2Score: game.playerTwoScore,
+  });
 
   // SETTER FUNCTIONS //
   const clearBoard = () => {
@@ -47,8 +52,16 @@ const gameController = (() => {
 
   const resetGame = () => {
     clearBoard();
-    resetScore();
     game.winner = "";
+    playerOne.resetTurn();
+    playerTwo.resetTurn();
+    game.isDraw = false;
+    game.currentMarker = "";
+  };
+
+  const wipeGame = () => {
+    resetGame();
+    resetScore();
   };
 
   const resetScore = () => {
@@ -59,7 +72,6 @@ const gameController = (() => {
   const intializeGame = (playerOne) => {
     playerOne.toggleTurn();
     updateCurrentMarker(playerOne.getMarker());
-    resetGame();
   };
 
   const switchPlayer = (player, otherPlayer) => {
@@ -149,16 +161,41 @@ const gameController = (() => {
     return false;
   };
 
+  const startGame = () => {
+    let cell = "";
+    do {
+      cell = prompt("Enter which cell you'd like to mark");
+      const board = gameboard.getBoard();
+      if (board.at(cell) === "") {
+        board.splice(cell, 1, gameController.getCurrentMarker());
+        gameboard.updateBoard(board);
+        console.log(gameboard.getBoard());
+        if (gameController.scanForWin() || gameController.checkForDraw()) {
+          break;
+        }
+        playerOne.getTurn()
+          ? gameController.switchPlayer(playerTwo, playerOne)
+          : gameController.switchPlayer(playerOne, playerTwo);
+      } else {
+        console.log("Cannot mark a filled cell");
+      }
+    } while (true);
+    return "game-over";
+  };
+
   return {
     resetGame,
+    wipeGame,
     scanForWin,
     updateScore,
+    getScore,
     getWinner,
     checkForDraw,
     intializeGame,
     getCurrentMarker,
     switchPlayer,
     getDrawState,
+    startGame,
   };
 })();
 
@@ -166,30 +203,15 @@ const playerOne = newPlayer("Player 1", "X");
 const playerTwo = newPlayer("Player 2", "O");
 gameController.intializeGame(playerOne);
 
-let cell = "";
-do {
-  cell = prompt("Enter which cell you'd like to mark");
-  const board = gameboard.getBoard();
-  if (board.at(cell) === "") {
-    board.splice(cell, 1, gameController.getCurrentMarker());
-    gameboard.updateBoard(board);
-    console.log(gameboard.getBoard());
-    if (gameController.scanForWin() || gameController.checkForDraw()) {
-      break;
-    }
-    playerOne.getTurn()
-      ? gameController.switchPlayer(playerTwo, playerOne)
-      : gameController.switchPlayer(playerOne, playerTwo);
-  } else {
-    console.log("Cannot mark a filled cell");
-  }
-} while (true);
-console.log(
-  "Winner: ",
-  gameController.getWinner() !== ""
-    ? gameController.getWinner()
-    : "It's a draw!"
-);
+if (gameController.startGame() === "game-over") {
+  gameController.getDrawState()
+    ? console.log("It's a draw!")
+    : console.log(`${gameController.getWinner()} Wins!`);
 
-if (gameController.getWinner() !== "") {
+  gameController.updateScore();
+  console.log(
+    `Player 1 Score: ${gameController.getScore().p1Score}\nPlayer 2 Score: ${
+      gameController.getScore().p2Score
+    }`
+  );
 }
