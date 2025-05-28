@@ -4,10 +4,19 @@
   --cyber-green: hsl(72, 100%, 68%);
 }
 
-body {
+*,
+*::after,
+*::before {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  background-color: var(--cyber-green);
+}
+
+body {
   font-family: "Saira Condensed";
 }
 
@@ -20,39 +29,37 @@ img {
 .page-wrapper {
   display: grid;
   grid-template-rows: auto 1fr;
-  height: 100vh;
+  min-height: 100dvh;
   background-color: var(--primary-bg);
   padding: 2rem;
+  gap: 2rem;
 }
 
 .titling-wrapper {
+  /* alternative: make header display: grid, justify-content: left */
   width: fit-content;
 }
 
 .stacked {
   display: grid;
-  justify-items: start;
   align-items: center;
 }
 
 .stacked > * {
-  grid-row: 1/2;
-  grid-column: 1/2;
+  grid-row: 1/-1;
+  grid-column: 1/-1;
 }
 
 .grid-points {
   height: 1.875rem;
+  filter: drop-shadow(0 0 0.05em var(--cyber-green));
 }
 
 .game-title {
-  background-color: var(--primary-bg-transparent);
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
   justify-self: center;
   padding: 0px 1rem;
   backdrop-filter: blur(0.5px);
+  background-color: var(--primary-bg-transparent);
 }
 
 .game-title span {
@@ -61,14 +68,33 @@ img {
 }
 
 .main-wrapper {
-  max-width: 43.75rem;
-  aspect-ratio: 1;
-  width: 100%;
-  justify-self: center;
-  padding: 1rem;
+  color: var(--cyber-green);
 }
 
 .main {
   outline: 1px solid var(--cyber-green);
-  height: 100%;
+  padding: 1rem;
+}
+
+.player-ui {
+  display: flex;
+  justify-content: space-between;
+}
+
+:where(.player1, .player2) .score-wrapper {
+  display: flex;
+}
+.player2 .score-wrapper {
+  justify-content: flex-end;
+}
+
+:where(.player1, .player2) span,
+.player-name {
+  line-height: 1.4;
+  font-family: "Saira Condensed ExtraLight";
+}
+
+.player-name {
+  border-top: 1px solid var(--cyber-green);
+  border-bottom: 1px solid var(--cyber-green);
 }
