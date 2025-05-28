@@ -1,0 +1,89 @@
+@font-face {
+  font-family: "Saira Condensed Thin";
+  src: url("Saira\ Condensed\ Thin.woff2") format("woff2"),
+    url("Saira\ Condensed\ Thin.woff") format("woff");
+  font-weight: 250;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed ExtraLight";
+  src: url("Saira\ Condensed\ ExtraLight.woff2") format("woff2"),
+    url("Saira\ Condensed\ ExtraLight.woff") format("woff");
+  font-weight: 275;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed Light";
+  src: url("Saira\ Condensed\ Light.woff2") format("woff2"),
+    url("Saira\ Condensed\ Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed";
+  src: url("Saira\ Condensed\ Regular.woff2") format("woff2"),
+    url("Saira\ Condensed\ Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed Medium";
+  src: url("Saira\ Condensed\ Medium.woff2") format("woff2"),
+    url("Saira\ Condensed\ Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed SemiBold";
+  src: url("Saira\ Condensed\ SemiBold.woff2") format("woff2"),
+    url("Saira\ Condensed\ SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed Bold";
+  src: url("Saira\ Condensed\ Bold.woff2") format("woff2"),
+    url("Saira\ Condensed\ Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed ExtraBold";
+  src: url("Saira\ Condensed\ ExtraBold.woff2") format("woff2"),
+    url("Saira\ Condensed\ ExtraBold.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}
+
+@font-face {
+  font-family: "Saira Condensed Black";
+  src: url("Saira\ Condensed\ Black.woff2") format("woff2"),
+    url("Saira\ Condensed\ Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: condensed;
+  unicode-range: U+0020-03BC;
+}

@@ -199,19 +199,19 @@ const gameController = (() => {
   };
 })();
 
-const playerOne = newPlayer("Player 1", "X");
-const playerTwo = newPlayer("Player 2", "O");
-gameController.intializeGame(playerOne);
+// const playerOne = newPlayer("Player 1", "X");
+// const playerTwo = newPlayer("Player 2", "O");
+// gameController.intializeGame(playerOne);
 
-if (gameController.startGame() === "game-over") {
-  gameController.getDrawState()
-    ? console.log("It's a draw!")
-    : console.log(`${gameController.getWinner()} Wins!`);
+// if (gameController.startGame() === "game-over") {
+//   gameController.getDrawState()
+//     ? console.log("It's a draw!")
+//     : console.log(`${gameController.getWinner()} Wins!`);
 
-  gameController.updateScore();
-  console.log(
-    `Player 1 Score: ${gameController.getScore().p1Score}\nPlayer 2 Score: ${
-      gameController.getScore().p2Score
-    }`
-  );
-}
+//   gameController.updateScore();
+//   console.log(
+//     `Player 1 Score: ${gameController.getScore().p1Score}\nPlayer 2 Score: ${
+//       gameController.getScore().p2Score
+//     }`
+//   );
+// }

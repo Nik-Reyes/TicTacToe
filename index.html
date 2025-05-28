@@ -4,9 +4,59 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="/assets/fonts/fonts.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="page-wrapper">
+      <div class="header">
+        <div class="titling-wrapper stacked">
+          <div class="grid-points-wrapper">
+            <img
+              class="grid-points"
+              src="assets/images/svgs/grid.svg"
+              alt="grid-point-decoration"
+              width="169"
+              height="21"
+            />
+          </div>
+          <div class="game-title"><span>TIC TAC TOE</span></div>
+        </div>
+      </div>
+      <div class="main-wrapper">
+        <div class="main">
+          <div class="player-ui"></div>
+          <div class="play-area">
+            <div class="board-wrapper">
+              <div class="cyber-bar"></div>
+              <div class="board-cap"></div>
+              <div class="board">
+                <div class="cell" data-idx="0"></div>
+                <div class="cell" data-idx="1"></div>
+                <div class="cell" data-idx="2"></div>
+                <div class="cell" data-idx="3"></div>
+                <div class="cell" data-idx="4"></div>
+                <div class="cell" data-idx="5"></div>
+                <div class="cell" data-idx="6"></div>
+                <div class="cell" data-idx="7"></div>
+                <div class="cell" data-idx="8"></div>
+              </div>
+            </div>
+            <div class="array-tracker">
+              <div class="box-0"></div>
+              <div class="box-1"></div>
+              <div class="box-2"></div>
+              <div class="box-3"></div>
+              <div class="box-4"></div>
+              <div class="box-5"></div>
+              <div class="box-6"></div>
+              <div class="box-7"></div>
+              <div class="box-8"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
