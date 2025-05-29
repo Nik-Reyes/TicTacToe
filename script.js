@@ -175,71 +175,104 @@ const gameController = (() => {
   };
 })();
 
+const interfaceController = (() => {
+  const turnLabel = document.querySelector(".player-turn-display");
+  let clickedCellIdx = null;
+  const displayState = {
+    updateTurnDisplay: () => {
+      turnLabel.innerText = `TURN: ${
+        gameController.getCurrentMarker() === "X"
+          ? playerOne.getName()
+          : playerTwo.getName()
+      }`;
+      return this;
+    },
+    updateScoreDisplay: () => {
+      gameController.updateScore();
+      const winnerNum = parseInt(gameController.getWinner().at(-1));
+      const scoreLabel = document.querySelector(
+        `.player${winnerNum} .player-score`
+      );
+      scoreLabel.innerText =
+        winnerNum === 1
+          ? gameController.getScore().p1Score
+          : gameController.getScore().p2Score;
+      return this;
+    },
+  };
+
+  const appendMarker = (e) => {
+    const marker = document.createElement("div");
+    marker.className = "marker";
+    marker.innerText = gameController.getCurrentMarker();
+    e.target.append(marker);
+  };
+
+  const removeHoverBox = (e) => {
+    e.target.querySelector(".hover-box").remove();
+  };
+
+  const updateGameboard = (e) => {
+    const cellIdx = e.target.dataset.idx;
+    clickedCellIdx = cellIdx;
+    let board = gameboard.getBoard();
+    board.splice(cellIdx, 1, gameController.getCurrentMarker());
+    gameboard.updateBoard(board);
+  };
+
+  const updateArrayTracker = () => {
+    const box = document.querySelector(`.box-${clickedCellIdx} span`);
+    box.innerText = gameController.getCurrentMarker();
+  };
+
+  const updateMarker = () => {
+    playerOne.getTurn()
+      ? gameController.switchPlayer(playerTwo, playerOne)
+      : gameController.switchPlayer(playerOne, playerTwo);
+    displayState.updateTurnDisplay();
+  };
+
+  const endGame = () => {
+    playingBoard.removeEventListener("click", handleCellClick);
+  };
+
+  const gameOver = () => {
+    if (gameController.scanForWin()) {
+      displayState.updateScoreDisplay();
+      endGame();
+      return true;
+    } else if (gameController.checkForDraw()) {
+      endGame();
+      return true;
+    }
+    return false;
+  };
+
+  const handleCellClick = (e) => {
+    if (e.target.closest(".cell")) {
+      const cell = e.target.closest(".cell");
+      if (!cell.querySelector(".marker")) {
+        appendMarker(e);
+        removeHoverBox(e);
+        updateGameboard(e);
+        updateArrayTracker();
+
+        if (!gameOver()) {
+          updateMarker();
+        }
+      } else {
+        console.log("cell already marked");
+      }
+    }
+  };
+
+  return {
+    handleCellClick,
+  };
+})();
+
 const playerOne = newPlayer("Player 1", "X");
 const playerTwo = newPlayer("Player 2", "O");
 gameController.intializeGame(playerOne);
-
-const cells = Array.from(document.querySelectorAll(".cell"));
-const _board = document.querySelector(".board");
-
-const turnLabel = document.querySelector(".player-turn-display");
-turnLabel.innerText = `TURN: ${
-  gameController.getCurrentMarker() === "X"
-    ? playerOne.getName()
-    : playerTwo.getName()
-}`;
-
-_board.addEventListener("click", (e) => {
-  if (e.target.closest(".cell")) {
-    const cell = e.target.closest(".cell");
-    // prohibit placing a marker in an already filled cell
-    if (!cell.querySelector(".marker")) {
-      // create and append the marker
-      const marker = document.createElement("div");
-      marker.className = "marker";
-      marker.innerText = gameController.getCurrentMarker();
-      e.target.append(marker);
-
-      // remove the hover effect
-      e.target.querySelector(".hover-box").remove();
-
-      // Update the gameboard
-      const cellIdx = e.target.dataset.idx;
-      let board = gameboard.getBoard();
-      board.splice(cellIdx, 1, gameController.getCurrentMarker());
-      gameboard.updateBoard(board);
-
-      // update array tracker
-      const box = document.querySelector(`.box-${cellIdx} span`);
-      box.innerText = gameController.getCurrentMarker();
-
-      // Check for a win or draw, else toggle marker
-      if (gameController.scanForWin()) {
-        // Update score display
-        gameController.updateScore();
-        const winnerNum = parseInt(gameController.getWinner().at(-1));
-        const scoreLabel = document.querySelector(
-          `.player${winnerNum} .player-score`
-        );
-        scoreLabel.innerText =
-          winnerNum === 1
-            ? gameController.getScore().p1Score
-            : gameController.getScore().p2Score;
-        console.log("WIN");
-      } else if (gameController.checkForDraw()) {
-        console.log("Its a draw!");
-      } else {
-        playerOne.getTurn()
-          ? gameController.switchPlayer(playerTwo, playerOne)
-          : gameController.switchPlayer(playerOne, playerTwo);
-        turnLabel.innerText = `TURN: ${
-          gameController.getCurrentMarker() === "X"
-            ? playerOne.getName()
-            : playerTwo.getName()
-        }`;
-      }
-    } else {
-      console.log("cell already marked");
-    }
-  }
-});
+const playingBoard = document.querySelector(".board");
+playingBoard.addEventListener("click", interfaceController.handleCellClick);
