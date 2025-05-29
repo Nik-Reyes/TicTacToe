@@ -225,15 +225,23 @@ _board.addEventListener("click", (e) => {
       gameboard.updateBoard(board);
 
       // update array tracker
-      console.log(cellIdx);
       const box = document.querySelector(`.box-${cellIdx} span`);
       box.innerText = gameController.getCurrentMarker();
 
       // Check for a win or draw, else toggle marker
       if (gameController.scanForWin()) {
+        // Update score display
         gameController.updateScore();
+        const winnerNum = parseInt(gameController.getWinner().at(-1));
+        const scoreLabel = document.querySelector(
+          `.player${winnerNum} .player-score`
+        );
+        scoreLabel.innerText =
+          winnerNum === 1
+            ? gameController.getScore().p1Score
+            : gameController.getScore().p2Score;
+        console.log(scoreLabel);
         console.log("WIN");
-        console.log(gameController.getScore());
       } else if (gameController.checkForDraw()) {
         console.log("Its a draw!");
       } else {
