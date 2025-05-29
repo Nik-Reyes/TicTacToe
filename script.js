@@ -204,6 +204,13 @@ gameController.intializeGame(playerOne);
 const cells = Array.from(document.querySelectorAll(".cell"));
 const _board = document.querySelector(".board");
 
+const turnLabel = document.querySelector(".player-turn-display");
+turnLabel.innerText = `TURN: ${
+  gameController.getCurrentMarker() === "X"
+    ? playerOne.getName()
+    : playerTwo.getName()
+}`;
+
 _board.addEventListener("click", (e) => {
   if (e.target.closest(".cell")) {
     const cell = e.target.closest(".cell");
@@ -240,7 +247,6 @@ _board.addEventListener("click", (e) => {
           winnerNum === 1
             ? gameController.getScore().p1Score
             : gameController.getScore().p2Score;
-        console.log(scoreLabel);
         console.log("WIN");
       } else if (gameController.checkForDraw()) {
         console.log("Its a draw!");
@@ -248,6 +254,11 @@ _board.addEventListener("click", (e) => {
         playerOne.getTurn()
           ? gameController.switchPlayer(playerTwo, playerOne)
           : gameController.switchPlayer(playerOne, playerTwo);
+        turnLabel.innerText = `TURN: ${
+          gameController.getCurrentMarker() === "X"
+            ? playerOne.getName()
+            : playerTwo.getName()
+        }`;
       }
     } else {
       console.log("cell already marked");
