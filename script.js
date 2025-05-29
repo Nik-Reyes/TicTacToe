@@ -218,21 +218,29 @@ _board.addEventListener("click", (e) => {
       // remove the hover effect
       e.target.querySelector(".hover-box").remove();
 
+      // Update the gameboard
       const cellIdx = e.target.dataset.idx;
       let board = gameboard.getBoard();
       board.splice(cellIdx, 1, gameController.getCurrentMarker());
       gameboard.updateBoard(board);
 
-      // Check for a win or draw
+      // update array tracker
+      console.log(cellIdx);
+      const box = document.querySelector(`.box-${cellIdx} span`);
+      box.innerText = gameController.getCurrentMarker();
+
+      // Check for a win or draw, else toggle marker
       if (gameController.scanForWin()) {
+        gameController.updateScore();
         console.log("WIN");
+        console.log(gameController.getScore());
       } else if (gameController.checkForDraw()) {
         console.log("Its a draw!");
+      } else {
+        playerOne.getTurn()
+          ? gameController.switchPlayer(playerTwo, playerOne)
+          : gameController.switchPlayer(playerOne, playerTwo);
       }
-
-      playerOne.getTurn()
-        ? gameController.switchPlayer(playerTwo, playerOne)
-        : gameController.switchPlayer(playerOne, playerTwo);
     } else {
       console.log("cell already marked");
     }
