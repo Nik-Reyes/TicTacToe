@@ -157,18 +157,21 @@ img {
   box-sizing: content-box;
   display: grid;
   place-items: center;
+  font-size: clamp(1.75rem, 0.5056rem + 6.2222vw, 3.5rem);
+  line-height: 1;
 }
 
 .hover-box {
   display: none;
   width: 90%;
   height: 90%;
-  background-color: #6af7feba;
-  border: 2px solid #6af7fe;
+  background-color: hsla(183, 99%, 71%, 0.729);
+  border: 2px solid hsl(183, 99%, 71%);
+  pointer-events: none;
 }
 
 .cell:hover {
-  border: 3px solid #6af7fe;
+  border: 3px solid hsl(183, 99%, 71%);
 }
 
 .cell:hover .hover-box {

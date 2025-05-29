@@ -25,7 +25,6 @@ const gameController = (() => {
     playerOneScore: 0,
     playerTwoScore: 0,
     winner: "",
-    isDraw: false,
     currentMarker: "",
   };
 
@@ -169,7 +168,6 @@ const gameController = (() => {
       if (board.at(cell) === "") {
         board.splice(cell, 1, gameController.getCurrentMarker());
         gameboard.updateBoard(board);
-        console.log(gameboard.getBoard());
         if (gameController.scanForWin() || gameController.checkForDraw()) {
           break;
         }
@@ -199,9 +197,56 @@ const gameController = (() => {
   };
 })();
 
-// const playerOne = newPlayer("Player 1", "X");
-// const playerTwo = newPlayer("Player 2", "O");
-// gameController.intializeGame(playerOne);
+const playerOne = newPlayer("Player 1", "X");
+const playerTwo = newPlayer("Player 2", "O");
+gameController.intializeGame(playerOne);
+
+const cells = Array.from(document.querySelectorAll(".cell"));
+const _board = document.querySelector(".board");
+
+_board.addEventListener("click", (e) => {
+  if (e.target.closest(".cell")) {
+    const cell = e.target.closest(".cell");
+    // prohibit placing a marker in an already filled cell
+    if (!cell.querySelector(".marker")) {
+      // create and append the marker
+      const marker = document.createElement("div");
+      marker.className = "marker";
+      marker.innerText = gameController.getCurrentMarker();
+      e.target.append(marker);
+
+      // remove the hover effect
+      e.target.querySelector(".hover-box").remove();
+
+      const cellIdx = e.target.dataset.idx;
+      let board = gameboard.getBoard();
+      board.splice(cellIdx, 1, gameController.getCurrentMarker());
+      gameboard.updateBoard(board);
+
+      // Check for a win or draw
+      if (gameController.scanForWin()) {
+        console.log("WIN");
+      } else if (gameController.checkForDraw()) {
+        console.log("Its a draw!");
+      }
+
+      playerOne.getTurn()
+        ? gameController.switchPlayer(playerTwo, playerOne)
+        : gameController.switchPlayer(playerOne, playerTwo);
+    } else {
+      console.log("cell already marked");
+    }
+  }
+});
+
+// when a cell is clicked
+// 1. check if the cell has already been clicked. Do not allow user to click a filled cell
+// 2. delete the hover effect for that cell
+// 3. place the current marker on the clicked cell
+// 4. get the index of the cell clicked
+// 5. update the gameboard array with the current marker using the index of the clicked cell
+// 6. scan for a win. If there is a win, remove the click event listener; and, display winner
+// 7. if no win, toggle the current marker
 
 // if (gameController.startGame() === "game-over") {
 //   gameController.getDrawState()
