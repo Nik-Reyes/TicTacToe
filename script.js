@@ -160,27 +160,6 @@ const gameController = (() => {
     return false;
   };
 
-  const startGame = () => {
-    let cell = "";
-    do {
-      cell = prompt("Enter which cell you'd like to mark");
-      const board = gameboard.getBoard();
-      if (board.at(cell) === "") {
-        board.splice(cell, 1, gameController.getCurrentMarker());
-        gameboard.updateBoard(board);
-        if (gameController.scanForWin() || gameController.checkForDraw()) {
-          break;
-        }
-        playerOne.getTurn()
-          ? gameController.switchPlayer(playerTwo, playerOne)
-          : gameController.switchPlayer(playerOne, playerTwo);
-      } else {
-        console.log("Cannot mark a filled cell");
-      }
-    } while (true);
-    return "game-over";
-  };
-
   return {
     resetGame,
     wipeGame,
@@ -193,7 +172,6 @@ const gameController = (() => {
     getCurrentMarker,
     switchPlayer,
     getDrawState,
-    startGame,
   };
 })();
 
@@ -265,25 +243,3 @@ _board.addEventListener("click", (e) => {
     }
   }
 });
-
-// when a cell is clicked
-// 1. check if the cell has already been clicked. Do not allow user to click a filled cell
-// 2. delete the hover effect for that cell
-// 3. place the current marker on the clicked cell
-// 4. get the index of the cell clicked
-// 5. update the gameboard array with the current marker using the index of the clicked cell
-// 6. scan for a win. If there is a win, remove the click event listener; and, display winner
-// 7. if no win, toggle the current marker
-
-// if (gameController.startGame() === "game-over") {
-//   gameController.getDrawState()
-//     ? console.log("It's a draw!")
-//     : console.log(`${gameController.getWinner()} Wins!`);
-
-//   gameController.updateScore();
-//   console.log(
-//     `Player 1 Score: ${gameController.getScore().p1Score}\nPlayer 2 Score: ${
-//       gameController.getScore().p2Score
-//     }`
-//   );
-// }
