@@ -2,6 +2,10 @@
   --primary-bg: hsl(260, 23%, 8%);
   --primary-bg-transparent: hsla(260, 23%, 8%, 0.9);
   --cyber-green: hsl(72, 100%, 68%);
+  --cyber-blue: hsl(183, 99%, 71%);
+  --win-color: hsl(149, 78%, 47%);
+  --winner-panel-color: hsla(143, 29%, 11%, 1);
+  --new-game-button: hsla(143, 29%, 11%, 0.8);
 }
 
 *,
@@ -131,13 +135,114 @@ img {
   grid-column: 2;
   background-color: var(--cyber-green);
   color: var(--primary-bg);
-  padding-left: 1rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.board-cap-animate {
+  width: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
+  justify-self: center;
+  animation: blink 200ms 2 forwards, expandLeftRight 300ms 500ms forwards;
+  background-color: var(--win-color);
+}
+
+.board-cap-animate .board-cap-content {
+  visibility: hidden;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes expandLeftRight {
+  to {
+    width: 100%;
+  }
 }
 
 .board-cap-content {
   display: flex;
   gap: 0.25rem;
   align-items: center;
+  font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
+}
+
+.panel-backing {
+  position: relative;
+  grid-column: 2/3;
+  grid-row: 3;
+  background-color: var(--win-color);
+  z-index: 1;
+  transform: scaleY(0);
+  transform-origin: top;
+  opacity: 0;
+  padding: 2px;
+}
+
+.expand-down {
+  animation: expandDown 300ms 850ms forwards;
+}
+
+@keyframes expandDown {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.play-again {
+  appearance: none;
+  position: relative;
+  display: block;
+  margin-left: auto;
+  padding: 0.5em 1.75em;
+  top: -2lh;
+  opacity: 0;
+  background-color: var(--new-game-button);
+  border: 2px solid var(--winner-panel-color);
+  font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
+  line-height: 1;
+  font-family: inherit;
+  color: var(--cyber-green);
+}
+
+.slide-down {
+  animation: slideDown 750ms 1400ms forwards;
+}
+
+@keyframes slideDown {
+  to {
+    top: 1lh;
+    opacity: 1;
+  }
+}
+
+.winner-panel {
+  position: relative;
+  z-index: 1;
+  background-color: var(--win-color);
+  height: 75%;
+  width: 100%;
+  opacity: 0;
+}
+
+.fade-in {
+  animation: fadeIn 300ms 1250ms forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    background-color: var(--winner-panel-color);
+  }
 }
 
 .board {
@@ -165,12 +270,12 @@ img {
   width: 90%;
   height: 90%;
   background-color: hsla(183, 99%, 71%, 0.729);
-  border: 2px solid hsl(183, 99%, 71%);
+  border: 2px solid var(--cyber-blue);
   pointer-events: none;
 }
 
 .cell:hover {
-  border: 3px solid hsl(183, 99%, 71%);
+  border: 3px solid var(--cyber-blue);
 }
 
 .cell:hover .hover-box {
@@ -216,4 +321,8 @@ img {
 .array-tracker span {
   line-height: 1;
   font-size: clamp(0.625rem, 0.0461rem + 2.8947vw, 1.3125rem);
+}
+
+.hide {
+  display: none;
 }

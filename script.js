@@ -177,6 +177,9 @@ const gameController = (() => {
 
 const interfaceController = (() => {
   const turnLabel = document.querySelector(".player-turn-display");
+  const cap = document.querySelector(".board-cap");
+  const backPanel = document.querySelector(".panel-backing");
+  const winnerPanel = document.querySelector(".winner-panel");
   let clickedCellIdx = null;
   const displayState = {
     updateTurnDisplay: () => {
@@ -234,6 +237,13 @@ const interfaceController = (() => {
 
   const endGame = () => {
     playingBoard.removeEventListener("click", handleCellClick);
+    playAgainButton.classList.remove("hide");
+    playAgainButton.classList.add("slide-down");
+    winnerPanel.classList.add("fade-in");
+    backPanel.classList.add("expand-down");
+    cap.classList.add("board-cap-animate");
+
+    console.log(cap);
   };
 
   const gameOver = () => {
@@ -266,8 +276,18 @@ const interfaceController = (() => {
     }
   };
 
+  const handleNewGame = () => {
+    console.log("Hi");
+    cap.classList.remove("board-cap-animate");
+    backPanel.classList.remove("expand-down");
+    winnerPanel.classList.remove("fade-in");
+    playAgainButton.classList.add("hide");
+    playAgainButton.classList.remove("slide-down");
+  };
+
   return {
     handleCellClick,
+    handleNewGame,
   };
 })();
 
@@ -276,3 +296,5 @@ const playerTwo = newPlayer("Player 2", "O");
 gameController.intializeGame(playerOne);
 const playingBoard = document.querySelector(".board");
 playingBoard.addEventListener("click", interfaceController.handleCellClick);
+const playAgainButton = document.querySelector(".play-again");
+playAgainButton.addEventListener("click", interfaceController.handleNewGame);
