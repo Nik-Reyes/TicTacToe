@@ -19,6 +19,9 @@ const newPlayer = function (name, marker) {
   return { getName, getMarker, toggleTurn, getTurn, resetTurn };
 };
 
+const playerOne = newPlayer("Player 1", "X");
+const playerTwo = newPlayer("Player 2", "O");
+
 // GAME CONTROLLER IIFE CONTROLS GAME //
 const gameController = (() => {
   const game = {
@@ -49,7 +52,7 @@ const gameController = (() => {
       : game.playerTwoScore++;
   };
 
-  const resetGame = () => {
+  const resetGameData = () => {
     clearBoard();
     game.winner = "";
     playerOne.resetTurn();
@@ -161,7 +164,7 @@ const gameController = (() => {
   };
 
   return {
-    resetGame,
+    resetGameData,
     wipeGame,
     scanForWin,
     updateScore,
@@ -181,7 +184,7 @@ const interfaceController = (() => {
   const backPanel = document.querySelector(".panel-backing");
   const winnerPanel = document.querySelector(".winner-panel");
   let clickedCellIdx = null;
-  const displayState = {
+  const displayManager = {
     updateTurnDisplay: () => {
       turnLabel.innerText = `TURN: ${
         gameController.getCurrentMarker() === "X"
@@ -202,6 +205,37 @@ const interfaceController = (() => {
           : gameController.getScore().p2Score;
       return this;
     },
+    hideHoverBox: (e) => {
+      e.target.querySelector(".hover-box").classList.add("hide");
+    },
+    showHoverBoxes: () => {
+      document
+        .querySelectorAll(".hover-box")
+        .forEach((box) => box.classList.remove("hide"));
+    },
+    animateEndGame: () => {
+      playAgainButton.classList.remove("hide");
+      playAgainButton.classList.add("slide-down");
+      winnerPanel.classList.add("fade-in");
+      backPanel.classList.add("expand-down");
+      cap.classList.add("board-cap-animate");
+    },
+    animateNewGame: () => {
+      playAgainButton.classList.add("slide-down-reverse");
+      winnerPanel.classList.add("fade-in-reverse");
+      backPanel.classList.add("expand-down-reverse");
+      // cap.classList.add("board-cap-animate");
+    },
+    cleanUpAnimations: () => {
+      cap.classList.remove("board-cap-animate");
+      backPanel.classList.remove("expand-down");
+      backPanel.classList.remove("expand-down-reverse");
+      winnerPanel.classList.remove("fade-in");
+      winnerPanel.classList.remove("fade-in-reverse");
+      playAgainButton.classList.add("hide");
+      playAgainButton.classList.remove("slide-down");
+      playAgainButton.classList.remove("slide-down-reverse");
+    },
   };
 
   const appendMarker = (e) => {
@@ -209,10 +243,6 @@ const interfaceController = (() => {
     marker.className = "marker";
     marker.innerText = gameController.getCurrentMarker();
     e.target.append(marker);
-  };
-
-  const removeHoverBox = (e) => {
-    e.target.querySelector(".hover-box").remove();
   };
 
   const updateGameboard = (e) => {
@@ -228,27 +258,57 @@ const interfaceController = (() => {
     box.innerText = gameController.getCurrentMarker();
   };
 
+  const clearCells = (elements) => {
+    elements.forEach((element, i) => {
+      setTimeout(() => {
+        element.innerText = "";
+      }, i * 75);
+    });
+  };
+
+  const deleteMarkers = (elements) => {
+    elements.forEach((element, i) => {
+      setTimeout(() => {
+        element.remove();
+      }, i * 75);
+    });
+  };
+
   const updateMarker = () => {
     playerOne.getTurn()
       ? gameController.switchPlayer(playerTwo, playerOne)
       : gameController.switchPlayer(playerOne, playerTwo);
-    displayState.updateTurnDisplay();
+    displayManager.updateTurnDisplay();
+  };
+
+  const resetGame = () => {
+    const markers = document.querySelectorAll(".cell .marker");
+    const arrTrackerCells = document.querySelectorAll(".array-tracker span");
+    gameController.resetGameData();
+    deleteMarkers(markers);
+    clearCells(arrTrackerCells);
+    playingBoard.addEventListener("click", handleCellClick);
+    displayManager.showHoverBoxes();
+    gameController.intializeGame(playerOne);
+  };
+
+  const handleNewGame = () => {
+    displayManager.animateNewGame();
+
+    setTimeout(() => {
+      displayManager.cleanUpAnimations();
+      resetGame();
+    }, 1350);
   };
 
   const endGame = () => {
     playingBoard.removeEventListener("click", handleCellClick);
-    playAgainButton.classList.remove("hide");
-    playAgainButton.classList.add("slide-down");
-    winnerPanel.classList.add("fade-in");
-    backPanel.classList.add("expand-down");
-    cap.classList.add("board-cap-animate");
-
-    console.log(cap);
+    displayManager.animateEndGame();
   };
 
   const gameOver = () => {
     if (gameController.scanForWin()) {
-      displayState.updateScoreDisplay();
+      displayManager.updateScoreDisplay();
       endGame();
       return true;
     } else if (gameController.checkForDraw()) {
@@ -263,7 +323,7 @@ const interfaceController = (() => {
       const cell = e.target.closest(".cell");
       if (!cell.querySelector(".marker")) {
         appendMarker(e);
-        removeHoverBox(e);
+        displayManager.hideHoverBox(e);
         updateGameboard(e);
         updateArrayTracker();
 
@@ -276,23 +336,12 @@ const interfaceController = (() => {
     }
   };
 
-  const handleNewGame = () => {
-    console.log("Hi");
-    cap.classList.remove("board-cap-animate");
-    backPanel.classList.remove("expand-down");
-    winnerPanel.classList.remove("fade-in");
-    playAgainButton.classList.add("hide");
-    playAgainButton.classList.remove("slide-down");
-  };
-
   return {
     handleCellClick,
     handleNewGame,
   };
 })();
 
-const playerOne = newPlayer("Player 1", "X");
-const playerTwo = newPlayer("Player 2", "O");
 gameController.intializeGame(playerOne);
 const playingBoard = document.querySelector(".board");
 playingBoard.addEventListener("click", interfaceController.handleCellClick);

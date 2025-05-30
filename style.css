@@ -1,11 +1,31 @@
 :root {
   --primary-bg: hsl(260, 23%, 8%);
   --primary-bg-transparent: hsla(260, 23%, 8%, 0.9);
-  --cyber-green: hsl(72, 100%, 68%);
+  --cyber-green: #deff5c;
   --cyber-blue: hsl(183, 99%, 71%);
   --win-color: hsl(149, 78%, 47%);
-  --winner-panel-color: hsla(143, 29%, 11%, 1);
+  --winner-panel-color: #14241a;
   --new-game-button: hsla(143, 29%, 11%, 0.8);
+
+  --cap-blink-duration: 250ms;
+  --cap-blink-transition-delay: 325ms;
+  --cap-expand-duration: 300ms;
+  --cap-expand-delay: calc(
+    var(--cap-blink-transition-delay) + var(--cap-blink-duration)
+  );
+  --backPanel-expand-duration: 300ms;
+  --back-panel-expand-delay: calc(
+    var(--cap-expand-delay) + var(--cap-expand-duration)
+  );
+  --winner-panel-duration: 300ms;
+  --winner-panel-delay: calc(
+    var(--backPanel-expand-duration) + var(--back-panel-expand-delay)
+  );
+
+  --newGame-button-duration: 750ms;
+  --newGame-button-delay: calc(
+    var(--winner-panel-duration) + var(--winner-panel-delay)
+  );
 }
 
 *,
@@ -129,6 +149,8 @@ img {
   background-size: cover;
   background-position: center;
   clip-path: polygon(13.5px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 10px);
+  position: relative;
+  left: 0px;
 }
 
 .board-cap {
@@ -137,35 +159,6 @@ img {
   color: var(--primary-bg);
   overflow: hidden;
   white-space: nowrap;
-}
-
-.board-cap-animate {
-  width: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
-  justify-self: center;
-  animation: blink 200ms 2 forwards, expandLeftRight 300ms 500ms forwards;
-  background-color: var(--win-color);
-}
-
-.board-cap-animate .board-cap-content {
-  visibility: hidden;
-}
-
-@keyframes blink {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes expandLeftRight {
-  to {
-    width: 100%;
-  }
 }
 
 .board-cap-content {
@@ -187,17 +180,6 @@ img {
   padding: 2px;
 }
 
-.expand-down {
-  animation: expandDown 300ms 850ms forwards;
-}
-
-@keyframes expandDown {
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 .play-again {
   appearance: none;
   position: relative;
@@ -206,23 +188,12 @@ img {
   padding: 0.5em 1.75em;
   top: -2lh;
   opacity: 0;
-  background-color: var(--new-game-button);
-  border: 2px solid var(--winner-panel-color);
+  background-color: var(--winner-panel-color);
+  border: none;
+  color: var(--win-color);
   font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
   line-height: 1;
   font-family: inherit;
-  color: var(--cyber-green);
-}
-
-.slide-down {
-  animation: slideDown 750ms 1400ms forwards;
-}
-
-@keyframes slideDown {
-  to {
-    top: 1lh;
-    opacity: 1;
-  }
 }
 
 .winner-panel {
@@ -232,17 +203,6 @@ img {
   height: 75%;
   width: 100%;
   opacity: 0;
-}
-
-.fade-in {
-  animation: fadeIn 300ms 1250ms forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    background-color: var(--winner-panel-color);
-  }
 }
 
 .board {
@@ -278,7 +238,7 @@ img {
   border: 3px solid var(--cyber-blue);
 }
 
-.cell:hover .hover-box {
+.cell:hover :not(.hover-box.hide) {
   display: block;
 }
 
@@ -325,4 +285,120 @@ img {
 
 .hide {
   display: none;
+}
+
+/*=========== ANIMATIONS  ===========*/
+
+/************ Board Cap Animations  ************/
+.board-cap-animate {
+  width: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
+  justify-self: center;
+  background-color: var(--win-color);
+  animation: blink var(--cap-blink-duration) 2 forwards,
+    expandLeftRight var(--cap-expand-duration) var(--cap-expand-delay) forwards;
+}
+
+.board-cap-animate .board-cap-content {
+  opacity: 0;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes expandLeftRight {
+  to {
+    width: 100%;
+  }
+}
+
+/************ Backing Panel Animations  ************/
+.expand-down {
+  animation: expandDown var(--backPanel-expand-duration)
+    var(--back-panel-expand-delay) forwards;
+}
+
+@keyframes expandDown {
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.expand-down-reverse {
+  animation: expandDownReverse 300ms 1050ms both;
+}
+
+@keyframes expandDownReverse {
+  from {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  to {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+}
+/************ New Game Button Animations  ************/
+.slide-down {
+  animation: slideDown var(--newGame-button-duration)
+    var(--newGame-button-delay) forwards;
+}
+
+@keyframes slideDown {
+  to {
+    transform: translateY(3lh);
+    opacity: 1;
+  }
+}
+
+.slide-down-reverse {
+  animation: slideDownReverse 750ms forwards;
+}
+
+@keyframes slideDownReverse {
+  from {
+    transform: translateY(3lh);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-3lh);
+    opacity: 0;
+  }
+}
+
+/************ Winner Panel Animations  ************/
+.fade-in {
+  animation: fadeIn var(--winner-panel-duration) var(--winner-panel-delay)
+    forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    background-color: var(--winner-panel-color);
+  }
+}
+
+.fade-in-reverse {
+  animation: fadeInReverse 300ms 750ms both;
+}
+
+@keyframes fadeInReverse {
+  from {
+    opacity: 1;
+    background-color: var(--winner-panel-color);
+  }
+  to {
+    opacity: 0;
+    background-color: var(--win-color);
+  }
 }
