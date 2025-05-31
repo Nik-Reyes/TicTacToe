@@ -23,6 +23,7 @@
   );
 
   --newGame-button-duration: 750ms;
+  /* 1925ms */
   --newGame-button-delay: calc(
     var(--winner-panel-duration) + var(--winner-panel-delay)
   );
@@ -155,10 +156,16 @@ img {
 
 .board-cap {
   grid-column: 2;
+  display: grid;
   background-color: var(--cyber-green);
   color: var(--primary-bg);
   overflow: hidden;
   white-space: nowrap;
+}
+
+.board-cap > * {
+  grid-column: 1/-1;
+  grid-row: 1/-1;
 }
 
 .board-cap-content {
@@ -166,6 +173,9 @@ img {
   gap: 0.25rem;
   align-items: center;
   font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
+  position: relative;
+  z-index: 1;
+  padding-left: 10px;
 }
 
 .panel-backing {
@@ -180,20 +190,35 @@ img {
   padding: 2px;
 }
 
+.bp-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: -2lh;
+  line-height: 1;
+  font-family: inherit;
+  opacity: 0;
+}
+
+.winner-label > span {
+  line-height: 1;
+  padding-left: 0.75em;
+  color: var(--winner-panel-color);
+  font-size: clamp(0.875rem, 0.2528rem + 3.1111vw, 1.75rem);
+  opacity: 0;
+}
+
 .play-again {
   appearance: none;
-  position: relative;
   display: block;
   margin-left: auto;
   padding: 0.5em 1.75em;
-  top: -2lh;
-  opacity: 0;
   background-color: var(--winner-panel-color);
   border: none;
   color: var(--win-color);
   font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
-  line-height: 1;
   font-family: inherit;
+  line-height: 1;
 }
 
 .winner-panel {
@@ -298,8 +323,8 @@ img {
     expandLeftRight var(--cap-expand-duration) var(--cap-expand-delay) forwards;
 }
 
-.board-cap-animate .board-cap-content {
-  opacity: 0;
+.blink {
+  animation: blink 300ms 3 forwards;
 }
 
 @keyframes blink {
@@ -320,6 +345,46 @@ img {
   }
 }
 
+.board-cap-animate .board-cap-content {
+  opacity: 0;
+}
+
+.board-cap-fade-in {
+  animation: turnFadeIn 200ms forwards;
+}
+
+@keyframes turnFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cap-background {
+  transform-origin: right;
+  transform: scaleX(0) scaleY(0.075);
+  background-color: var(--cyber-green);
+}
+
+.board-cap-animate-reverse {
+  animation: expandLeft 200ms 1200ms forwards,
+    expandVertically 300ms 1400ms forwards;
+}
+
+@keyframes expandLeft {
+  to {
+    transform: scaleX(1) scaleY(0.05);
+  }
+}
+
+@keyframes expandVertically {
+  to {
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
 /************ Backing Panel Animations  ************/
 .expand-down {
   animation: expandDown var(--backPanel-expand-duration)
@@ -334,7 +399,8 @@ img {
 }
 
 .expand-down-reverse {
-  animation: expandDownReverse 300ms 1050ms both;
+  animation: expandDownReverse var(--backPanel-expand-duration)
+    var(--back-panel-expand-delay) both;
 }
 
 @keyframes expandDownReverse {
@@ -345,33 +411,6 @@ img {
   to {
     transform: scaleY(0);
     opacity: 1;
-  }
-}
-/************ New Game Button Animations  ************/
-.slide-down {
-  animation: slideDown var(--newGame-button-duration)
-    var(--newGame-button-delay) forwards;
-}
-
-@keyframes slideDown {
-  to {
-    transform: translateY(3lh);
-    opacity: 1;
-  }
-}
-
-.slide-down-reverse {
-  animation: slideDownReverse 750ms forwards;
-}
-
-@keyframes slideDownReverse {
-  from {
-    transform: translateY(3lh);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(-3lh);
-    opacity: 0;
   }
 }
 
@@ -389,7 +428,7 @@ img {
 }
 
 .fade-in-reverse {
-  animation: fadeInReverse 300ms 750ms both;
+  animation: fadeInReverse var(--winner-panel-duration) 500ms both;
 }
 
 @keyframes fadeInReverse {
@@ -400,5 +439,33 @@ img {
   to {
     opacity: 0;
     background-color: var(--win-color);
+  }
+}
+
+/************ New Game Button Animations  ************/
+.slide-down {
+  animation: slideDown var(--newGame-button-duration)
+    var(--newGame-button-delay) forwards;
+}
+
+@keyframes slideDown {
+  to {
+    transform: translateY(3lh);
+    opacity: 1;
+  }
+}
+
+.slide-down-reverse {
+  animation: slideDownReverse var(--newGame-button-duration) forwards;
+}
+
+@keyframes slideDownReverse {
+  from {
+    transform: translateY(3lh);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-3lh);
+    opacity: 0;
   }
 }

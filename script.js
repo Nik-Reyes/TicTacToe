@@ -183,6 +183,9 @@ const interfaceController = (() => {
   const cap = document.querySelector(".board-cap");
   const backPanel = document.querySelector(".panel-backing");
   const winnerPanel = document.querySelector(".winner-panel");
+  const capBacking = document.querySelector(".cap-background");
+  const panelRow = document.querySelector(".bp-row");
+  const winnerLabel = document.querySelector(".winner-label span");
   let clickedCellIdx = null;
   const displayManager = {
     updateTurnDisplay: () => {
@@ -214,27 +217,53 @@ const interfaceController = (() => {
         .forEach((box) => box.classList.remove("hide"));
     },
     animateEndGame: () => {
+      playAgainButton.disabled = true;
       playAgainButton.classList.remove("hide");
-      playAgainButton.classList.add("slide-down");
+      panelRow.classList.add("slide-down");
       winnerPanel.classList.add("fade-in");
       backPanel.classList.add("expand-down");
       cap.classList.add("board-cap-animate");
+      panelRow.addEventListener(
+        "animationend",
+        () => {
+          winnerLabel.classList.add("blink");
+          playAgainButton.disabled = false;
+        },
+        { once: true }
+      );
     },
     animateNewGame: () => {
-      playAgainButton.classList.add("slide-down-reverse");
+      panelRow.classList.add("slide-down-reverse");
       winnerPanel.classList.add("fade-in-reverse");
       backPanel.classList.add("expand-down-reverse");
-      // cap.classList.add("board-cap-animate");
+      capBacking.classList.add("board-cap-animate-reverse");
     },
     cleanUpAnimations: () => {
+      turnLabel.classList.add("board-cap-fade-in");
       cap.classList.remove("board-cap-animate");
+      capBacking.classList.remove("board-cap-animate-reverse");
       backPanel.classList.remove("expand-down");
       backPanel.classList.remove("expand-down-reverse");
       winnerPanel.classList.remove("fade-in");
       winnerPanel.classList.remove("fade-in-reverse");
       playAgainButton.classList.add("hide");
-      playAgainButton.classList.remove("slide-down");
-      playAgainButton.classList.remove("slide-down-reverse");
+      panelRow.classList.remove("slide-down");
+      panelRow.classList.remove("slide-down-reverse");
+      winnerLabel.classList.remove("blink");
+      turnLabel.addEventListener(
+        "animationend",
+        () => {
+          turnLabel.classList.remove("board-cap-fade-in");
+        },
+        { once: true }
+      );
+    },
+    updateWinnerLabel: () => {
+      console.log(gameController.getWinner());
+      winnerLabel.innerText =
+        gameController.getWinner() === ""
+          ? "IT'S A DRAW"
+          : `WINNER: ${gameController.getWinner()}`;
     },
   };
 
@@ -262,7 +291,7 @@ const interfaceController = (() => {
     elements.forEach((element, i) => {
       setTimeout(() => {
         element.innerText = "";
-      }, i * 75);
+      }, i * 100);
     });
   };
 
@@ -270,7 +299,7 @@ const interfaceController = (() => {
     elements.forEach((element, i) => {
       setTimeout(() => {
         element.remove();
-      }, i * 75);
+      }, i * 100);
     });
   };
 
@@ -282,28 +311,32 @@ const interfaceController = (() => {
   };
 
   const resetGame = () => {
+    playAgainButton.disabled = true;
     const markers = document.querySelectorAll(".cell .marker");
     const arrTrackerCells = document.querySelectorAll(".array-tracker span");
     gameController.resetGameData();
     deleteMarkers(markers);
     clearCells(arrTrackerCells);
-    playingBoard.addEventListener("click", handleCellClick);
-    displayManager.showHoverBoxes();
     gameController.intializeGame(playerOne);
+    setTimeout(() => {
+      displayManager.showHoverBoxes();
+      playingBoard.addEventListener("click", handleCellClick);
+    }, 900);
   };
 
   const handleNewGame = () => {
     displayManager.animateNewGame();
-
     setTimeout(() => {
       displayManager.cleanUpAnimations();
       resetGame();
-    }, 1350);
+    }, 1750);
   };
 
   const endGame = () => {
     playingBoard.removeEventListener("click", handleCellClick);
+    playAgainButton.disabled = true;
     displayManager.animateEndGame();
+    displayManager.updateWinnerLabel();
   };
 
   const gameOver = () => {
