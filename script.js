@@ -29,10 +29,12 @@ const gameController = (() => {
     playerTwoScore: 0,
     winner: "",
     currentMarker: "",
+    currentPlayer: "",
   };
 
   // GETTER FUNCTIONS //
   const getWinner = () => game.winner;
+  const getCurrentPlayer = () => game.currentPlayer;
   const getCurrentMarker = () => game.currentMarker;
   const getDrawState = () => game.isDraw;
   const getScore = () => ({
@@ -61,6 +63,8 @@ const gameController = (() => {
     game.currentMarker = "";
   };
 
+  const resetCurrentPlayer = () => (game.currentPlayer = "Player 1");
+
   const wipeGame = () => {
     resetGame();
     resetScore();
@@ -72,7 +76,9 @@ const gameController = (() => {
   };
 
   const intializeGame = (playerOne) => {
+    [playerOne, playerTwo].forEach((player) => player.resetTurn());
     playerOne.toggleTurn();
+    resetCurrentPlayer();
     updateCurrentMarker(playerOne.getMarker());
   };
 
@@ -165,7 +171,6 @@ const gameController = (() => {
 
   return {
     resetGameData,
-    wipeGame,
     scanForWin,
     updateScore,
     getScore,
@@ -173,6 +178,7 @@ const gameController = (() => {
     checkForDraw,
     intializeGame,
     getCurrentMarker,
+    getCurrentPlayer,
     switchPlayer,
     getDrawState,
   };
@@ -233,7 +239,6 @@ const interfaceController = (() => {
           ? playerOne.getName()
           : playerTwo.getName()
       }`;
-      return this;
     },
     updateScoreDisplay: () => {
       gameController.updateScore();
@@ -245,7 +250,6 @@ const interfaceController = (() => {
         winnerNum === 1
           ? gameController.getScore().p1Score
           : gameController.getScore().p2Score;
-      return this;
     },
     hideHoverBox: (e) => {
       e.target.querySelector(".hover-box").classList.add("hide");
@@ -366,6 +370,7 @@ const interfaceController = (() => {
     deleteMarkers(markers);
     clearCells(arrTrackerCells);
     gameController.intializeGame(playerOne);
+    displayManager.updateTurnDisplay();
     setTimeout(() => {
       displayManager.showHoverBoxes();
       playingBoard.addEventListener("click", handleCellClick);
@@ -374,6 +379,10 @@ const interfaceController = (() => {
 
   const handleNewGame = () => {
     displayManager.animateNewGame();
+    const lastAnimatedElement = document.querySelector(
+      ".board-cap-animate-reverse"
+    );
+    lastAnimatedElement.addEventListener("animationend", () => {});
     setTimeout(() => {
       displayManager.cleanUpAnimations();
       resetGame();
