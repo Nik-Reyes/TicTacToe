@@ -339,18 +339,14 @@ const interfaceController = (() => {
     box.innerText = gameController.getCurrentMarker();
   };
 
-  const clearCells = (elements) => {
-    elements.forEach((element, i) => {
+  const clearMarkers = () => {
+    const markers = document.querySelectorAll(".cell .marker");
+    const arrTrackerCells = document.querySelectorAll(".array-tracker span");
+    [...markers, ...arrTrackerCells].forEach((element, i) => {
       setTimeout(() => {
-        element.innerText = "";
-      }, i * 100);
-    });
-  };
-
-  const deleteMarkers = (elements) => {
-    elements.forEach((element, i) => {
-      setTimeout(() => {
-        element.remove();
+        element.className === "marker"
+          ? element.remove()
+          : (element.innerText = "");
       }, i * 100);
     });
   };
@@ -364,13 +360,10 @@ const interfaceController = (() => {
 
   const resetGame = () => {
     playAgainButton.disabled = true;
-    const markers = document.querySelectorAll(".cell .marker");
-    const arrTrackerCells = document.querySelectorAll(".array-tracker span");
     gameController.resetGameData();
-    deleteMarkers(markers);
-    clearCells(arrTrackerCells);
     gameController.intializeGame(playerOne);
     displayManager.updateTurnDisplay();
+    clearMarkers();
     setTimeout(() => {
       displayManager.showHoverBoxes();
       playingBoard.addEventListener("click", handleCellClick);
