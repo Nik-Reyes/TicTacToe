@@ -252,15 +252,15 @@ img {
 
 .hover-box {
   display: none;
-  width: 90%;
-  height: 90%;
-  background-color: hsla(183, 99%, 71%, 0.729);
-  border: 2px solid var(--cyber-blue);
+  width: 50%;
+  height: 50%;
+  background-color: hsla(183, 99%, 71%, 0.35);
+  border: 0.05em solid var(--cyber-blue);
   pointer-events: none;
 }
 
 .cell:hover {
-  border: 3px solid var(--cyber-blue);
+  box-shadow: inset 0px 0px 0.1em 0.065em var(--cyber-blue);
 }
 
 .cell:hover :not(.hover-box.hide) {
