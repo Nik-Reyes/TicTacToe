@@ -262,10 +262,18 @@ const interfaceController = (() => {
     animateEndGame: () => {
       playAgainButton.disabled = true;
       playAgainButton.classList.remove("hide");
-      panelRow.classList.add("slide-down");
-      winnerPanel.classList.add("fade-in");
-      backPanel.classList.add("expand-down");
-      cap.classList.add("board-cap-animate");
+
+      const classes = [
+        { element: panelRow, _class: "slide-down" },
+        { element: winnerPanel, _class: "fade-in" },
+        { element: backPanel, _class: "expand-down" },
+        { element: cap, _class: "board-cap-animate" },
+      ];
+
+      classes.forEach(({ element, _class }) => {
+        element.classList.add(_class);
+      });
+
       panelRow.addEventListener(
         "animationend",
         () => {
@@ -275,10 +283,17 @@ const interfaceController = (() => {
       );
     },
     animateNewGame: () => {
-      panelRow.classList.add("slide-down-reverse");
-      winnerPanel.classList.add("fade-in-reverse");
-      backPanel.classList.add("expand-down-reverse");
-      capBacking.classList.add("board-cap-animate-reverse");
+      const classes = [
+        { element: panelRow, _class: "slide-down-reverse" },
+        { element: winnerPanel, _class: "fade-in-reverse" },
+        { element: backPanel, _class: "expand-down-reverse" },
+        { element: capBacking, _class: "board-cap-animate-reverse" },
+      ];
+
+      classes.forEach(({ element, _class }) => {
+        element.classList.add(_class);
+      });
+
       winnerPanel.addEventListener(
         "animationend",
         () => {
@@ -372,10 +387,6 @@ const interfaceController = (() => {
 
   const handleNewGame = () => {
     displayManager.animateNewGame();
-    const lastAnimatedElement = document.querySelector(
-      ".board-cap-animate-reverse"
-    );
-    lastAnimatedElement.addEventListener("animationend", () => {});
     setTimeout(() => {
       displayManager.cleanUpAnimations();
       resetGame();
@@ -402,26 +413,23 @@ const interfaceController = (() => {
   };
 
   const handleCellClick = (e) => {
-    if (e.target.closest(".cell")) {
-      const cell = e.target.closest(".cell");
-      if (!cell.querySelector(".marker")) {
-        appendMarker(e);
-        displayManager.hideHoverBox(e);
-        updateGameboard(e);
-        updateArrayTracker();
+    const cell = e.target.closest(".cell");
+    if (!cell) return;
 
-        if (!gameOver()) {
-          updateMarker();
-        }
-      } else {
-        const markedCell = e.target.closest(".cell");
-        console.log(markedCell);
-        markedCell.classList.add("flash-red");
-        markedCell.addEventListener("animationend", () => {
-          markedCell.classList.remove("flash-red");
-        });
-      }
+    if (cell.querySelector(".marker")) {
+      cell.classList.add("flash-red");
+      cell.addEventListener("animationend", () => {
+        cell.classList.remove("flash-red");
+      });
+      return;
     }
+
+    appendMarker(e);
+    updateGameboard(e);
+    updateArrayTracker();
+    displayManager.hideHoverBox(e);
+
+    if (!gameOver()) updateMarker();
   };
 
   return {

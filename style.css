@@ -24,9 +24,11 @@
   );
 
   --newGame-button-duration: 750ms;
+  --intersection-timing: -250ms;
   /* 1925ms */
   --newGame-button-delay: calc(
-    var(--winner-panel-duration) + var(--winner-panel-delay)
+    var(--winner-panel-duration) + var(--winner-panel-delay) +
+      var(--intersection-timing)
   );
 }
 
