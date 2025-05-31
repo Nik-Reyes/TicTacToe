@@ -4,6 +4,7 @@
   --cyber-green: #deff5c;
   --cyber-blue: hsl(183, 99%, 71%);
   --win-color: hsl(149, 78%, 47%);
+  --cyber-red: rgb(228, 27, 51);
   --winner-panel-color: #14241a;
   --new-game-button: hsla(143, 29%, 11%, 0.8);
 
@@ -248,6 +249,7 @@ img {
   place-items: center;
   font-size: clamp(1.75rem, 0.5056rem + 6.2222vw, 3.5rem);
   line-height: 1;
+  user-select: none;
 }
 
 .hover-box {
@@ -336,6 +338,22 @@ img {
   }
   100% {
     opacity: 1;
+  }
+}
+
+.flash-red {
+  animation: flashRed 100ms 2;
+}
+
+@keyframes flashRed {
+  0% {
+    background-color: var(--cyber-red);
+  }
+  50% {
+    background-color: var(--primary-bg);
+  }
+  100% {
+    background-color: var(--cyber-red);
   }
 }
 

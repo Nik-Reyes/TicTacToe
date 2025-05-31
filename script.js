@@ -364,7 +364,12 @@ const interfaceController = (() => {
           updateMarker();
         }
       } else {
-        console.log("cell already marked");
+        const markedCell = e.target.closest(".cell");
+        console.log(markedCell);
+        markedCell.classList.add("flash-red");
+        markedCell.addEventListener("animationend", () => {
+          markedCell.classList.remove("flash-red");
+        });
       }
     }
   };
