@@ -183,11 +183,50 @@ const interfaceController = (() => {
   const cap = document.querySelector(".board-cap");
   const backPanel = document.querySelector(".panel-backing");
   const winnerPanel = document.querySelector(".winner-panel");
+  const winnerPanelText = document.querySelector(".winner-panel span");
   const capBacking = document.querySelector(".cap-background");
   const panelRow = document.querySelector(".bp-row");
   const winnerLabel = document.querySelector(".winner-label span");
+  let moveOrder = [];
   let clickedCellIdx = null;
   const displayManager = {
+    printWinnerPanelText: () => {
+      let endIndex = 0;
+      const speed = 1;
+      const numberOfDecimals = 15;
+      const moveSet = (() => {
+        const joinedMoves = moveOrder
+          .map(({ cellIdx, currentMarker }, i, arr) =>
+            i === arr.length - 1
+              ? `//move_${i}-${currentMarker}${".".repeat(
+                  numberOfDecimals
+                )}cell_${cellIdx}`
+              : `//move_${i}-${currentMarker}${".".repeat(
+                  numberOfDecimals
+                )}cell_${cellIdx}\n`
+          )
+          .join("");
+
+        moveOrder = [];
+        return [joinedMoves];
+      })();
+
+      let message =
+        `//assets retrieved\n//term_attempt_1\n//term_attempt_2\n//term_attempt_3\n//term_success\n${moveSet}`.toUpperCase();
+      return (typewriter = () => {
+        winnerPanelText.innerText = message.substring(0, endIndex);
+        if (endIndex++ !== message.length) {
+          setTimeout(typewriter, speed);
+        } else {
+          [winnerLabel, winnerPanelText].forEach((element) =>
+            element.classList.add("blink")
+          );
+          winnerLabel.addEventListener("animationend", () => {
+            playAgainButton.disabled = false;
+          });
+        }
+      });
+    },
     updateTurnDisplay: () => {
       turnLabel.innerText = `TURN: ${
         gameController.getCurrentMarker() === "X"
@@ -226,8 +265,7 @@ const interfaceController = (() => {
       panelRow.addEventListener(
         "animationend",
         () => {
-          winnerLabel.classList.add("blink");
-          playAgainButton.disabled = false;
+          displayManager.printWinnerPanelText()();
         },
         { once: true }
       );
@@ -237,6 +275,13 @@ const interfaceController = (() => {
       winnerPanel.classList.add("fade-in-reverse");
       backPanel.classList.add("expand-down-reverse");
       capBacking.classList.add("board-cap-animate-reverse");
+      winnerPanel.addEventListener(
+        "animationend",
+        () => {
+          winnerPanelText.innerText = "";
+        },
+        { once: true }
+      );
     },
     cleanUpAnimations: () => {
       turnLabel.classList.add("board-cap-fade-in");
@@ -250,6 +295,8 @@ const interfaceController = (() => {
       panelRow.classList.remove("slide-down");
       panelRow.classList.remove("slide-down-reverse");
       winnerLabel.classList.remove("blink");
+      winnerPanelText.classList.remove("blink");
+
       turnLabel.addEventListener(
         "animationend",
         () => {
@@ -259,7 +306,6 @@ const interfaceController = (() => {
       );
     },
     updateWinnerLabel: () => {
-      console.log(gameController.getWinner());
       winnerLabel.innerText =
         gameController.getWinner() === ""
           ? "IT'S A DRAW"
@@ -278,8 +324,10 @@ const interfaceController = (() => {
     const cellIdx = e.target.dataset.idx;
     clickedCellIdx = cellIdx;
     let board = gameboard.getBoard();
-    board.splice(cellIdx, 1, gameController.getCurrentMarker());
+    let currentMarker = gameController.getCurrentMarker();
+    board.splice(cellIdx, 1, currentMarker);
     gameboard.updateBoard(board);
+    moveOrder.push({ cellIdx, currentMarker });
   };
 
   const updateArrayTracker = () => {

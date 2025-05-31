@@ -1,5 +1,5 @@
 :root {
-  --primary-bg: hsl(260, 23%, 8%);
+  --primary-bg: #131019;
   --primary-bg-transparent: hsla(260, 23%, 8%, 0.9);
   --cyber-green: #deff5c;
   --cyber-blue: hsl(183, 99%, 71%);
@@ -42,8 +42,10 @@ html {
   background-color: var(--cyber-green);
 }
 
-body {
+body,
+button {
   font-family: "Saira Condensed";
+  cursor: url(assets/images/cursors/cyber-cursor.png) 16 16, auto;
 }
 
 img {
@@ -162,6 +164,7 @@ img {
   color: var(--primary-bg);
   overflow: hidden;
   white-space: nowrap;
+  clip-path: polygon(3% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 35%);
 }
 
 .board-cap > * {
@@ -176,7 +179,12 @@ img {
   font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
   position: relative;
   z-index: 1;
-  padding-left: 10px;
+  padding-left: 1em;
+  font-family: "Saira Condensed Extralight";
+}
+
+.matrix-wrapper {
+  width: clamp(0.75rem, 0.2167rem + 2.6667vw, 1.5rem);
 }
 
 .panel-backing {
@@ -205,8 +213,12 @@ img {
   line-height: 1;
   padding-left: 0.75em;
   color: var(--winner-panel-color);
-  font-size: clamp(0.875rem, 0.2528rem + 3.1111vw, 1.75rem);
+  font-size: clamp(0.4375rem, -1.925rem + 14vw, 0.875rem);
   opacity: 0;
+
+  @media only screen and (min-width: 320px) {
+    font-size: clamp(0.875rem, 0.2528rem + 3.1111vw, 1.75rem);
+  }
 }
 
 .play-again {
@@ -220,6 +232,13 @@ img {
   font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
   font-family: inherit;
   line-height: 1;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 8% 100%, 0% 70%);
+  transition: background-color 200ms ease-in-out;
+}
+
+.play-again:hover {
+  background-color: var(--cyber-green);
+  color: var(--winner-panel-color);
 }
 
 .winner-panel {
@@ -229,6 +248,15 @@ img {
   height: 75%;
   width: 100%;
   opacity: 0;
+  line-height: 1.2;
+  padding: 1em;
+  font-size: clamp(0.4688rem, -0.1312rem + 3vw, 0.9375rem);
+  font-family: "Saira Condensed Thin";
+  color: var(--win-color);
+  overflow: hidden;
+  @media only screen and (min-width: 570px) {
+    font-size: clamp(0.9375rem, -0.1312rem + 3vw, 1.3125rem);
+  }
 }
 
 .board {
