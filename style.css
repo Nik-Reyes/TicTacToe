@@ -208,10 +208,11 @@ img {
 }
 
 .bp-row {
+  font-size: 1rem;
   display: flex;
   align-items: center;
   position: relative;
-  top: -2lh;
+  top: -2em;
   line-height: 1;
   font-family: inherit;
   opacity: 0;
@@ -541,7 +542,7 @@ img {
 
 @keyframes slideDown {
   to {
-    transform: translateY(3lh);
+    transform: translateY(3em);
     opacity: 1;
   }
 }
@@ -552,11 +553,11 @@ img {
 
 @keyframes slideDownReverse {
   from {
-    transform: translateY(3lh);
+    transform: translateY(3em);
     opacity: 1;
   }
   to {
-    transform: translateY(-3lh);
+    transform: translateY(-3em);
     opacity: 0;
   }
 }
