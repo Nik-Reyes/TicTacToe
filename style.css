@@ -309,7 +309,7 @@ img {
   transform: scaleY(0);
   transform-origin: top;
   opacity: 0;
-  padding: 2px;
+  padding: 0 2px;
 }
 
 .bp-row {
@@ -416,7 +416,7 @@ img {
   grid-row: 4;
   grid-column: 2;
   display: flex;
-  outline: 1px solid var(--cyber-green);
+  border: 1px solid var(--cyber-green);
   overflow: auto;
   padding: 0.25rem;
   gap: 0.25rem;
@@ -462,6 +462,7 @@ img {
   display: none;
 }
 
+/*=========== DECORATIVE ELEMENTS  ===========*/
 .module-text,
 .match-text,
 .integrity-text {
