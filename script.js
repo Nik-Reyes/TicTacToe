@@ -66,7 +66,7 @@ const gameController = (() => {
   const resetCurrentPlayer = () => (game.currentPlayer = "Player 1");
 
   const wipeGame = () => {
-    resetGame();
+    resetGameData();
     resetScore();
   };
 
@@ -193,13 +193,20 @@ const interfaceController = (() => {
   const capBacking = document.querySelector(".cap-background");
   const panelRow = document.querySelector(".bp-row");
   const winnerLabel = document.querySelector(".winner-label span");
+  const decorativeText = Array.from(
+    document.querySelectorAll(".board-cap > div:nth-child(-n+4)")
+  );
+  console.log(decorativeText);
   let moveOrder = [];
   let clickedCellIdx = null;
   const displayManager = {
     printWinnerPanelText: () => {
       let endIndex = 0;
-      const speed = 1;
+      const speed = 5;
       const numberOfDecimals = 15;
+      let charsPerFrame = 1;
+      lastFrameTime = performance.now();
+
       const moveSet = (() => {
         const joinedMoves = moveOrder
           .map(({ cellIdx, currentMarker }, i, arr) =>
@@ -219,8 +226,17 @@ const interfaceController = (() => {
 
       let message =
         `//assets retrieved\n//term_attempt_1\n//term_attempt_2\n//term_attempt_3\n//term_success\n${moveSet}`.toUpperCase();
+
       return (typewriter = () => {
+        const frameStart = performance.now();
+        if (frameStart - lastFrameTime > 20) {
+          charsPerFrame = Math.min(charsPerFrame + 1, 5);
+        }
+
+        endIndex = Math.min(endIndex + charsPerFrame, message.length);
         winnerPanelText.innerText = message.substring(0, endIndex);
+        lastFrameTime = frameStart;
+
         if (endIndex++ !== message.length) {
           setTimeout(typewriter, speed);
         } else {
@@ -274,7 +290,17 @@ const interfaceController = (() => {
         element.classList.add(_class);
       });
 
-      panelRow.addEventListener(
+      cap.addEventListener(
+        "animationend",
+        () => {
+          decorativeText.forEach((text) => {
+            text.classList.add("board-cap-fade-in");
+          });
+        },
+        { once: true }
+      );
+
+      backPanel.addEventListener(
         "animationend",
         () => {
           displayManager.printWinnerPanelText()();
@@ -316,6 +342,10 @@ const interfaceController = (() => {
       winnerLabel.classList.remove("blink");
       winnerPanelText.classList.remove("blink");
 
+      decorativeText.forEach((text) => {
+        text.classList.remove("board-cap-fade-in");
+      });
+
       turnLabel.addEventListener(
         "animationend",
         () => {
@@ -352,6 +382,7 @@ const interfaceController = (() => {
   const updateArrayTracker = () => {
     const box = document.querySelector(`.box-${clickedCellIdx} span`);
     box.innerText = gameController.getCurrentMarker();
+    box.classList.add("marked");
   };
 
   const clearMarkers = () => {
@@ -359,10 +390,13 @@ const interfaceController = (() => {
     const arrTrackerCells = document.querySelectorAll(".array-tracker span");
     [...markers, ...arrTrackerCells].forEach((element, i) => {
       setTimeout(() => {
-        element.className === "marker"
-          ? element.remove()
-          : (element.innerText = "");
-      }, i * 100);
+        if (element.className === "marker") {
+          element.remove();
+        } else {
+          element.innerText = "";
+          element.classList.remove("marked");
+        }
+      }, i * 45);
     });
   };
 
