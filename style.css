@@ -41,7 +41,8 @@
 }
 
 html {
-  background-color: var(--cyber-green);
+  background-color: var(--primary-bg);
+  overflow: hidden;
 }
 
 body,
@@ -63,6 +64,8 @@ img {
   background-color: var(--primary-bg);
   padding: 2rem;
   gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .titling-wrapper {
@@ -81,19 +84,85 @@ img {
 }
 
 .grid-points {
-  height: 1.875rem;
+  height: clamp(1.5rem, 3vw, 2.125rem);
   filter: drop-shadow(0 0 0.05em var(--cyber-green));
 }
 
+.grid-points-wrapper {
+  position: relative;
+}
+
+.grid-points-wrapper::before {
+  content: url("data:image/svg+xml,%3Csvg width='3000' height='30' viewBox='0 0 3000 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cline y1='0.5' x2='3000' y2='0.5' stroke='%23D2DA08'/%3E%3Cline y1='0.5' x2='3000' y2='0.5' stroke='%23D2DA08'/%3E%3Cline y1='8.5' x2='3000' y2='8.5' stroke='%23D2DA08'/%3E%3Cline y1='16.5' x2='3000' y2='16.5' stroke='%23D2DA08'/%3E%3Cline y1='24.5' x2='3000' y2='24.5' stroke='%23D2DA08'/%3E%3Cline y1='32.5' x2='3000' y2='32.5' stroke='%23D2DA08'/%3E%3Cline y1='40.5' x2='3000' y2='40.5' stroke='%23D2DA08'/%3E%3Cline y1='48.5' x2='3000' y2='48.5' stroke='%23D2DA08'/%3E%3C/svg%3E%0A");
+  position: absolute;
+  left: 105%;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.header-bar {
+  background-color: var(--cyber-green);
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0px 0px 10px 3px var(--cyber-green), 0px 0px 8px 1px #336530;
+  height: 35px;
+  max-width: 550px;
+  width: 100%;
+  justify-self: end;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  @media only screen and (min-width: 645px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.session-text {
+  font-size: 4px;
+  align-self: center;
+  padding-top: 3em;
+  padding-left: 5em;
+}
+
+.certified-text {
+  font-size: 3.5px;
+  align-self: self-end;
+  justify-self: center;
+  white-space: nowrap;
+  display: none;
+  @media only screen and (min-width: 645px) {
+    display: block;
+  }
+}
+
+.barcode-wrapper {
+  max-width: 18px;
+  margin-right: 0.2em;
+  margin-top: 0.25em;
+  justify-self: end;
+}
+
+.barcode-text {
+  font-size: 4.5px;
+  line-height: 1;
+  text-align: center;
+}
+
 .game-title {
+  position: relative;
+  z-index: 1;
   justify-self: center;
   padding: 0px 1rem;
-  backdrop-filter: blur(0.5px);
-  background-color: var(--primary-bg-transparent);
+  background-color: var(--primary-bg);
+  line-height: 1;
 }
 
 .game-title span {
-  font-size: 1.25rem;
+  font-size: clamp(0.875rem, 0.6083rem + 1.3333vw, 1.25rem);
   color: var(--cyber-green);
 }
 
@@ -126,6 +195,23 @@ img {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
+  position: relative;
+  isolation: isolate;
+  z-index: 2;
+  padding: 0.5rem 0;
+}
+
+.player-ui::before {
+  content: "";
+  position: absolute;
+  left: -1000%;
+  width: 2000%;
+  top: 0;
+  bottom: 0;
+  background-color: #3a4001a4;
+  border-top: 0.25px solid #a6bb51;
+  border-bottom: 0.25px solid #a6bb51;
+  z-index: -1;
 }
 
 :where(.player1, .player2) .score-wrapper {
