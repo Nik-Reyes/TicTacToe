@@ -42,7 +42,7 @@
 
 html {
   background-color: var(--primary-bg);
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 body,
@@ -58,19 +58,21 @@ img {
 }
 
 .page-wrapper {
-  display: grid;
-  grid-template-rows: auto 1fr;
   min-height: 100dvh;
   background-color: var(--primary-bg);
-  padding: 2rem;
+  overflow-x: hidden;
+}
+
+.content-wrapper {
+  display: grid;
+  grid-template-rows: auto 1fr;
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 2rem 0;
 }
 
 .titling-wrapper {
-  /* alternative: make header display: grid, justify-content: left */
   width: fit-content;
+  justify-self: start;
 }
 
 .stacked {
@@ -95,7 +97,7 @@ img {
 .grid-points-wrapper::before {
   content: url("data:image/svg+xml,%3Csvg width='3000' height='30' viewBox='0 0 3000 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cline y1='0.5' x2='3000' y2='0.5' stroke='%23D2DA08'/%3E%3Cline y1='0.5' x2='3000' y2='0.5' stroke='%23D2DA08'/%3E%3Cline y1='8.5' x2='3000' y2='8.5' stroke='%23D2DA08'/%3E%3Cline y1='16.5' x2='3000' y2='16.5' stroke='%23D2DA08'/%3E%3Cline y1='24.5' x2='3000' y2='24.5' stroke='%23D2DA08'/%3E%3Cline y1='32.5' x2='3000' y2='32.5' stroke='%23D2DA08'/%3E%3Cline y1='40.5' x2='3000' y2='40.5' stroke='%23D2DA08'/%3E%3Cline y1='48.5' x2='3000' y2='48.5' stroke='%23D2DA08'/%3E%3C/svg%3E%0A");
   position: absolute;
-  left: 105%;
+  left: 110%;
 }
 
 .header {
@@ -103,6 +105,10 @@ img {
   grid-template-columns: auto 1fr;
   gap: 3rem;
   align-items: start;
+  max-width: 1100px;
+  justify-self: center;
+  width: 100%;
+  padding: 0 calc(clamp(0.125rem, -0.1023rem + 1.1364vw, 0.75rem) + 1rem);
 }
 
 .header-bar {
@@ -126,6 +132,7 @@ img {
   align-self: center;
   padding-top: 3em;
   padding-left: 5em;
+  white-space: nowrap;
 }
 
 .certified-text {
@@ -168,16 +175,28 @@ img {
 
 .main-wrapper {
   color: var(--cyber-green);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.left-svg-container,
+.right-svg-container {
+  width: clamp(0.125rem, -0.1023rem + 1.1364vw, 0.75rem);
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='636' viewBox='0 0 10 636' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 636L0 595.284H9.99922L9.99922 636H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 463.883L0.000854492 423.167H10.0001L10.0001 463.883H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 573.064L0.000854492 563.811H10.0001V573.064H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 541.61L0.000854492 532.357H10.0001V541.61H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 495.344L0.000854492 486.09H10.0001V495.344H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 408.354L0.000854492 399.1H10.0001V408.354H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 389.848L0.000854492 380.595H10.0001V389.848H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 371.357L0.000854492 362.103H10.0001V371.357H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000732422 308.414L0.000732422 299.16H9.99996V308.414H0.000732422Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 273.254L0.000854492 264H10.0001V273.254H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 25.8882L0 9.91821e-05H9.99952L9.99952 25.8882H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 240.055L0 234.171H9.99952V240.055H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 220.051L0 214.168H9.99952V220.051H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 190.63L0 184.746H9.99952V190.63H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 135.328L0 129.444H9.99952V135.328H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 123.562L0 117.678H9.99952V123.562H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 111.792L0 105.908H9.99952V111.792H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 71.7847L0 65.901H9.99952V71.7847H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 49.4287L0 43.5451H9.99952V49.4287H0Z' fill='%23DEFF5D'/%3E%3C/svg%3E%0A");
+  background-size: cover;
+  background-position: center;
 }
 
 .main {
   display: grid;
+  flex: 1;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto 1fr auto;
-  outline: 1px solid var(--cyber-green);
+  border: 1px solid var(--cyber-green);
   padding: 1rem;
   max-width: 43.75rem;
-  margin: auto;
+  justify-content: center;
 
   @media only screen and (min-width: 550px) {
     grid-template-columns: auto 1fr clamp(
@@ -196,16 +215,16 @@ img {
   justify-content: space-between;
   margin-bottom: 1rem;
   position: relative;
-  isolation: isolate;
   z-index: 2;
   padding: 0.5rem 0;
+  font-size: clamp(1rem, 0.1806rem + 2.2222vw, 1.25rem);
 }
 
 .player-ui::before {
   content: "";
   position: absolute;
-  left: -1000%;
-  width: 2000%;
+  left: calc(-55vw + 50%);
+  width: 110vw;
   top: 0;
   bottom: 0;
   background-color: #3a4001a4;
@@ -362,6 +381,7 @@ img {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   aspect-ratio: 1;
+  background-color: var(--primary-bg);
 }
 
 .board .cell {
@@ -396,10 +416,11 @@ img {
   grid-row: 4;
   grid-column: 2;
   display: flex;
-  border: 1px solid var(--cyber-green);
+  outline: 1px solid var(--cyber-green);
   overflow: auto;
   padding: 0.25rem;
   gap: 0.25rem;
+  background-color: var(--primary-bg);
 
   @media only screen and (min-width: 550px) {
     grid-column: 3/4;
@@ -645,5 +666,40 @@ img {
   to {
     transform: translateY(-3em);
     opacity: 0;
+  }
+}
+
+/************ Decorative Header Bar Animations  ************/
+.flicker {
+  animation: flicker 15000ms linear infinite;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  0.4% {
+    opacity: 0.3;
+  }
+  1.3% {
+    opacity: 1;
+  }
+  2% {
+    opacity: 0.3;
+  }
+  2.7% {
+    opacity: 1;
+  }
+  3.2% {
+    opacity: 0.3;
+  }
+  4% {
+    opacity: 0.3;
+  }
+  6% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
   }
 }
