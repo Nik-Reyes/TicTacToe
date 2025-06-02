@@ -477,3 +477,31 @@ const playingBoard = document.querySelector(".board");
 playingBoard.addEventListener("click", interfaceController.handleCellClick);
 const playAgainButton = document.querySelector(".play-again");
 playAgainButton.addEventListener("click", interfaceController.handleNewGame);
+
+const bars = Array.from(document.querySelectorAll(".bar"));
+setInterval(() => {
+  bars.forEach((bar, i) => {
+    setTimeout(() => {
+      bar.classList.add("bar-slide-up");
+    }, i * 100);
+  });
+
+  let idx = 0;
+  for (let i = bars.length - 1; i >= 0; i--) {
+    setTimeout(() => {
+      bars[i].classList.add("bar-slide-down");
+    }, idx * 100);
+    idx++;
+  }
+
+  function handleLastAnimation(e) {
+    if (e.animationName === "barSlideDown") {
+      bars.forEach((bar) => {
+        bar.classList.remove("bar-slide-up", "bar-slide-down");
+      });
+      bars[0].removeEventListener("animationend", handleLastAnimation);
+    }
+  }
+
+  bars[0].addEventListener("animationend", handleLastAnimation);
+}, Math.floor(Math.random() * 20000) + 1000);

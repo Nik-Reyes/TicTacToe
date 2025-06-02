@@ -65,7 +65,7 @@ img {
 
 .content-wrapper {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   gap: 2rem;
   padding: 2rem 0;
 }
@@ -173,11 +173,14 @@ img {
   color: var(--cyber-green);
 }
 
+/*=========== MAIN CONTENT ELEMENTS  ===========*/
 .main-wrapper {
   color: var(--cyber-green);
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .left-svg-container,
@@ -462,7 +465,51 @@ img {
   display: none;
 }
 
-/*=========== DECORATIVE ELEMENTS  ===========*/
+/*=========== BOTTOM ANIMATED LINE ELEMENTS  ===========*/
+.animated-lines {
+  grid-row: 3;
+  height: 50px;
+  display: grid;
+  align-items: center;
+  position: relative;
+  z-index: 0;
+}
+
+.bar {
+  background-color: var(--cyber-green);
+  height: 0.5px;
+}
+
+.bar-slide-up {
+  animation: barSlideUp 500ms linear both;
+}
+
+.bar-slide-down {
+  animation: barSlideDown 500ms 1000ms linear both;
+}
+
+@keyframes barSlideDown {
+  from {
+    transform: translateY(-15vh);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes barSlideUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-15vh);
+    opacity: 0;
+  }
+}
+
+/*=========== DECORATIVE TEXT AND LOGOS  ===========*/
 .module-text,
 .match-text,
 .integrity-text {
