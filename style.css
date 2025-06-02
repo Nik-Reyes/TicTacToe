@@ -134,6 +134,10 @@ img {
   }
 }
 
+.header-bar > div:not(:last-child) {
+  line-height: initial;
+}
+
 .session-text {
   font-size: 4px;
   align-self: center;
@@ -162,7 +166,6 @@ img {
 
 .barcode-text {
   font-size: 4.5px;
-
   text-align: center;
 }
 
@@ -378,6 +381,7 @@ img {
   font-family: "Saira Condensed Thin";
   color: var(--win-color);
   overflow: hidden;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 4% 100%, 0% 95%);
   @media only screen and (min-width: 570px) {
     font-size: clamp(0.9375rem, -0.1312rem + 3vw, 1.3125rem);
   }
@@ -499,16 +503,6 @@ img {
   animation: slideDown 500ms linear both;
 }
 
-@keyframes barSlideUp {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(var(--distance));
-    opacity: 0;
-  }
-}
-
 /*=========== DECORATIVE TEXT AND LOGOS  ===========*/
 .module-text,
 .match-text,
@@ -516,6 +510,7 @@ img {
   position: absolute;
   font-family: "Saira Condensed";
   opacity: 0;
+  line-height: initial;
 }
 
 .tiles-svg-wrapper {
@@ -545,6 +540,25 @@ img {
   transform: translate(50%, -50%);
   font-size: clamp(0.0938rem, 0.0271rem + 0.3333vw, 0.1875rem);
   line-height: 1.2;
+}
+
+.model-text {
+  margin-left: auto;
+  padding-right: 1rem;
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-size: 3px;
+}
+
+.model-text::before {
+  content: "";
+  position: absolute;
+  top: 90%;
+  left: -65%;
+  width: 60%;
+  height: 0.5px;
+  background-color: var(--primary-bg);
 }
 
 /*=========== ANIMATIONS  ===========*/
