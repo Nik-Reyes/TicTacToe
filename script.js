@@ -1,5 +1,5 @@
 // GAMEBOARD IIFE //
-const gameboard = (() => {
+const Gameboard = (() => {
   let board = ["", "", "", "", "", "", "", "", ""];
 
   const updateBoard = (newBoard) => (board = newBoard);
@@ -9,7 +9,7 @@ const gameboard = (() => {
 })();
 
 // PLAYER FACTORY //
-const newPlayer = function (name, marker) {
+const NewPlayer = function (name, marker) {
   let turn = false;
   const getName = () => name;
   const getMarker = () => marker;
@@ -19,11 +19,11 @@ const newPlayer = function (name, marker) {
   return { getName, getMarker, toggleTurn, getTurn, resetTurn };
 };
 
-const playerOne = newPlayer("Player 1", "X");
-const playerTwo = newPlayer("Player 2", "O");
+const playerOne = NewPlayer("Player 1", "X");
+const playerTwo = NewPlayer("Player 2", "O");
 
 // GAME CONTROLLER IIFE CONTROLS GAME //
-const gameController = (() => {
+const GameController = (() => {
   const game = {
     playerOneScore: 0,
     playerTwoScore: 0,
@@ -44,7 +44,7 @@ const gameController = (() => {
 
   // SETTER FUNCTIONS //
   const clearBoard = () => {
-    gameboard.updateBoard(gameboard.getBoard().map(() => ""));
+    Gameboard.updateBoard(Gameboard.getBoard().map(() => ""));
   };
 
   const updateCurrentMarker = (newMarker) => (game.currentMarker = newMarker);
@@ -101,9 +101,9 @@ const gameController = (() => {
         : playerTwo.getName();
   };
 
-  const checkRows = (gameboard) => {
-    for (let i = 0; i < gameboard.getBoard().length; i += 3) {
-      const [first, second, third] = gameboard.getBoard().slice(i, i + 3);
+  const checkRows = (Gameboard) => {
+    for (let i = 0; i < Gameboard.getBoard().length; i += 3) {
+      const [first, second, third] = Gameboard.getBoard().slice(i, i + 3);
       if (threeInARow([first, second, third])) {
         assignWinner(first);
         return true;
@@ -112,14 +112,14 @@ const gameController = (() => {
     return false;
   };
 
-  const checkCols = (gameboard) => {
+  const checkCols = (Gameboard) => {
     for (let i = 0; i < 3; i++) {
       const idx_1 = i;
       const idx_2 = idx_1 + 3;
       const idx_3 = idx_2 + 3;
-      const first = gameboard.getBoard().slice(idx_1, idx_1 + 1)[0];
-      const second = gameboard.getBoard().slice(idx_2, idx_2 + 1)[0];
-      const third = gameboard.getBoard().slice(idx_3, idx_3 + 1)[0];
+      const first = Gameboard.getBoard().slice(idx_1, idx_1 + 1)[0];
+      const second = Gameboard.getBoard().slice(idx_2, idx_2 + 1)[0];
+      const third = Gameboard.getBoard().slice(idx_3, idx_3 + 1)[0];
 
       if (threeInARow([first, second, third])) {
         assignWinner(first);
@@ -129,9 +129,9 @@ const gameController = (() => {
     return false;
   };
 
-  const checkDiagonals = (gameboard) => {
-    const [zeroth, , , , fourth, , , , eigth] = gameboard.getBoard();
-    const [, , second, , , , sixth] = gameboard.getBoard();
+  const checkDiagonals = (Gameboard) => {
+    const [zeroth, , , , fourth, , , , eigth] = Gameboard.getBoard();
+    const [, , second, , , , sixth] = Gameboard.getBoard();
 
     if (threeInARow([zeroth, fourth, eigth])) {
       assignWinner(zeroth);
@@ -148,21 +148,21 @@ const gameController = (() => {
   const scanForWin = () => {
     // scans for a win every time the player/computer adds a marker
     if (
-      checkRows(gameboard) ||
-      checkCols(gameboard) ||
-      checkDiagonals(gameboard)
+      checkRows(Gameboard) ||
+      checkCols(Gameboard) ||
+      checkDiagonals(Gameboard)
     ) {
       return true;
     }
     return false;
   };
 
-  const checkForFullBoard = (gameboard) => {
-    return gameboard.getBoard().every((cell) => cell !== "");
+  const checkForFullBoard = (Gameboard) => {
+    return Gameboard.getBoard().every((cell) => cell !== "");
   };
 
   const checkForDraw = () => {
-    if (checkForFullBoard(gameboard)) {
+    if (checkForFullBoard(Gameboard)) {
       game.isDraw = true;
       return true;
     }
@@ -184,7 +184,7 @@ const gameController = (() => {
   };
 })();
 
-const interfaceController = (() => {
+const InterfaceController = (() => {
   const turnLabel = document.querySelector(".player-turn-display");
   const cap = document.querySelector(".board-cap");
   const backPanel = document.querySelector(".panel-backing");
@@ -251,21 +251,21 @@ const interfaceController = (() => {
     },
     updateTurnDisplay: () => {
       turnLabel.innerText = `TURN: ${
-        gameController.getCurrentMarker() === "X"
+        GameController.getCurrentMarker() === "X"
           ? playerOne.getName()
           : playerTwo.getName()
       }`;
     },
     updateScoreDisplay: () => {
-      gameController.updateScore();
-      const winnerNum = parseInt(gameController.getWinner().at(-1));
+      GameController.updateScore();
+      const winnerNum = parseInt(GameController.getWinner().at(-1));
       const scoreLabel = document.querySelector(
         `.player${winnerNum} .player-score`
       );
       scoreLabel.innerText =
         winnerNum === 1
-          ? gameController.getScore().p1Score
-          : gameController.getScore().p2Score;
+          ? GameController.getScore().p1Score
+          : GameController.getScore().p2Score;
     },
     hideHoverBox: (e) => {
       e.target.querySelector(".hover-box").classList.add("hide");
@@ -356,32 +356,32 @@ const interfaceController = (() => {
     },
     updateWinnerLabel: () => {
       winnerLabel.innerText =
-        gameController.getWinner() === ""
+        GameController.getWinner() === ""
           ? "IT'S A DRAW"
-          : `WINNER: ${gameController.getWinner()}`;
+          : `WINNER: ${GameController.getWinner()}`;
     },
   };
 
   const appendMarker = (e) => {
     const marker = document.createElement("div");
     marker.className = "marker";
-    marker.innerText = gameController.getCurrentMarker();
+    marker.innerText = GameController.getCurrentMarker();
     e.target.append(marker);
   };
 
   const updateGameboard = (e) => {
     const cellIdx = e.target.dataset.idx;
     clickedCellIdx = cellIdx;
-    let board = gameboard.getBoard();
-    let currentMarker = gameController.getCurrentMarker();
+    let board = Gameboard.getBoard();
+    let currentMarker = GameController.getCurrentMarker();
     board.splice(cellIdx, 1, currentMarker);
-    gameboard.updateBoard(board);
+    Gameboard.updateBoard(board);
     moveOrder.push({ cellIdx, currentMarker });
   };
 
   const updateArrayTracker = () => {
     const box = document.querySelector(`.box-${clickedCellIdx} span`);
-    box.innerText = gameController.getCurrentMarker();
+    box.innerText = GameController.getCurrentMarker();
     box.classList.add("marked");
   };
 
@@ -402,15 +402,15 @@ const interfaceController = (() => {
 
   const updateMarker = () => {
     playerOne.getTurn()
-      ? gameController.switchPlayer(playerTwo, playerOne)
-      : gameController.switchPlayer(playerOne, playerTwo);
+      ? GameController.switchPlayer(playerTwo, playerOne)
+      : GameController.switchPlayer(playerOne, playerTwo);
     displayManager.updateTurnDisplay();
   };
 
   const resetGame = () => {
     playAgainButton.disabled = true;
-    gameController.resetGameData();
-    gameController.intializeGame(playerOne);
+    GameController.resetGameData();
+    GameController.intializeGame(playerOne);
     displayManager.updateTurnDisplay();
     clearMarkers();
     setTimeout(() => {
@@ -435,11 +435,11 @@ const interfaceController = (() => {
   };
 
   const gameOver = () => {
-    if (gameController.scanForWin()) {
+    if (GameController.scanForWin()) {
       displayManager.updateScoreDisplay();
       endGame();
       return true;
-    } else if (gameController.checkForDraw()) {
+    } else if (GameController.checkForDraw()) {
       endGame();
       return true;
     }
@@ -472,11 +472,11 @@ const interfaceController = (() => {
   };
 })();
 
-gameController.intializeGame(playerOne);
+GameController.intializeGame(playerOne);
 const playingBoard = document.querySelector(".board");
-playingBoard.addEventListener("click", interfaceController.handleCellClick);
+playingBoard.addEventListener("click", InterfaceController.handleCellClick);
 const playAgainButton = document.querySelector(".play-again");
-playAgainButton.addEventListener("click", interfaceController.handleNewGame);
+playAgainButton.addEventListener("click", InterfaceController.handleNewGame);
 
 const bars = Array.from(document.querySelectorAll(".bar"));
 setInterval(() => {
@@ -506,4 +506,4 @@ setInterval(() => {
   }
 
   bars[0].addEventListener("animationend", handleLastAnimation);
-}, Math.floor(Math.random() * 20000) + 10000);
+}, Math.floor(Math.random() * 20000) + 5000);
