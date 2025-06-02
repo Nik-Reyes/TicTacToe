@@ -1,7 +1,7 @@
 :root {
-  --primary-bg: #131019;
+  --primary-bg: hsl(72, 100%, 2%);
   --primary-bg-transparent: hsla(260, 23%, 8%, 0.9);
-  --cyber-green: #deff5c;
+  --cyber-green: hsl(72, 100%, 68%);
   --cyber-blue: hsl(183, 99%, 71%);
   --win-color: hsl(149, 78%, 47%);
   --cyber-red: rgb(228, 27, 51);
@@ -25,7 +25,6 @@
 
   --newGame-button-duration: 750ms;
   --intersection-timing: -250ms;
-  /* 1925ms */
   --newGame-button-delay: calc(
     var(--winner-panel-duration) + var(--winner-panel-delay) +
       var(--intersection-timing)
@@ -42,13 +41,21 @@
 
 html {
   background-color: var(--primary-bg);
-  /* overflow: hidden; */
 }
 
-body,
-button {
+body {
+  line-height: 1;
   font-family: "Saira Condensed";
   cursor: url(assets/images/cursors/cyber-cursor.png) 16 16, auto;
+  --main-wrapper-gap: 1rem;
+  --lr-svg-width: clamp(0.125rem, -0.1023rem + 1.1364vw, 0.75rem);
+  --header-lr-padding: calc(var(--lr-svg-width) + var(--main-wrapper-gap));
+}
+
+button {
+  font-family: inherit;
+  cursor: inherit;
+  line-height: inherit;
 }
 
 img {
@@ -108,7 +115,7 @@ img {
   max-width: 1100px;
   justify-self: center;
   width: 100%;
-  padding: 0 calc(clamp(0.125rem, -0.1023rem + 1.1364vw, 0.75rem) + 1rem);
+  padding: 0 var(--header-lr-padding);
 }
 
 .header-bar {
@@ -155,7 +162,7 @@ img {
 
 .barcode-text {
   font-size: 4.5px;
-  line-height: 1;
+
   text-align: center;
 }
 
@@ -165,7 +172,6 @@ img {
   justify-self: center;
   padding: 0px 1rem;
   background-color: var(--primary-bg);
-  line-height: 1;
 }
 
 .game-title span {
@@ -185,7 +191,7 @@ img {
 
 .left-svg-container,
 .right-svg-container {
-  width: clamp(0.125rem, -0.1023rem + 1.1364vw, 0.75rem);
+  width: var(--lr-svg-width);
   background-image: url("data:image/svg+xml,%3Csvg width='10' height='636' viewBox='0 0 10 636' preserveAspectRatio='none' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 636L0 595.284H9.99922L9.99922 636H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 463.883L0.000854492 423.167H10.0001L10.0001 463.883H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 573.064L0.000854492 563.811H10.0001V573.064H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 541.61L0.000854492 532.357H10.0001V541.61H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 495.344L0.000854492 486.09H10.0001V495.344H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 408.354L0.000854492 399.1H10.0001V408.354H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 389.848L0.000854492 380.595H10.0001V389.848H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 371.357L0.000854492 362.103H10.0001V371.357H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000732422 308.414L0.000732422 299.16H9.99996V308.414H0.000732422Z' fill='%23DEFF5D'/%3E%3Cpath d='M0.000854492 273.254L0.000854492 264H10.0001V273.254H0.000854492Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 25.8882L0 9.91821e-05H9.99952L9.99952 25.8882H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 240.055L0 234.171H9.99952V240.055H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 220.051L0 214.168H9.99952V220.051H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 190.63L0 184.746H9.99952V190.63H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 135.328L0 129.444H9.99952V135.328H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 123.562L0 117.678H9.99952V123.562H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 111.792L0 105.908H9.99952V111.792H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 71.7847L0 65.901H9.99952V71.7847H0Z' fill='%23DEFF5D'/%3E%3Cpath d='M0 49.4287L0 43.5451H9.99952V49.4287H0Z' fill='%23DEFF5D'/%3E%3C/svg%3E%0A");
   background-size: cover;
   background-position: center;
@@ -263,8 +269,6 @@ img {
   background-size: cover;
   background-position: center;
   clip-path: polygon(13.5px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 10px);
-  position: relative;
-  left: 0px;
 }
 
 .board-cap {
@@ -303,6 +307,10 @@ img {
   width: clamp(0.75rem, 0.2167rem + 2.6667vw, 1.5rem);
 }
 
+.player-turn-display {
+  line-height: initial;
+}
+
 .panel-backing {
   position: relative;
   grid-column: 2/3;
@@ -321,13 +329,12 @@ img {
   align-items: center;
   position: relative;
   top: -2em;
-  line-height: 1;
+
   font-family: inherit;
   opacity: 0;
 }
 
 .winner-label > span {
-  line-height: 1;
   padding-left: 0.75em;
   color: var(--winner-panel-color);
   font-size: clamp(0.4375rem, -1.925rem + 14vw, 0.875rem);
@@ -348,7 +355,7 @@ img {
   color: var(--win-color);
   font-size: clamp(0.625rem, 0.1806rem + 2.2222vw, 1.25rem);
   font-family: inherit;
-  line-height: 1;
+
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 8% 100%, 0% 70%);
   transition: background-color 200ms ease-in-out;
 }
@@ -377,7 +384,6 @@ img {
 }
 
 .board {
-  max-width: 100%;
   display: grid;
   grid-column: 2/3;
   grid-row: 3;
@@ -394,7 +400,6 @@ img {
   display: grid;
   place-items: center;
   font-size: clamp(1.75rem, 0.5056rem + 6.2222vw, 3.5rem);
-  line-height: 1;
   user-select: none;
 }
 
@@ -457,7 +462,6 @@ img {
 }
 
 .array-tracker span {
-  line-height: 1;
   font-size: clamp(0.625rem, 0.0461rem + 2.8947vw, 1.3125rem);
 }
 
@@ -476,27 +480,23 @@ img {
 }
 
 .bar {
-  background-color: var(--cyber-green);
-  height: 0.5px;
+  border-bottom: 0.5px solid var(--cyber-green);
 }
 
 .bar-slide-up {
-  animation: barSlideUp 500ms linear both;
+  --distance-to: -15vh;
+  --distance-from: 0;
+  --opacity-to: 0;
+  --opacity-from: 1;
+  animation: slideUp 500ms linear both;
 }
 
 .bar-slide-down {
-  animation: barSlideDown 500ms linear both;
-}
-
-@keyframes barSlideDown {
-  from {
-    transform: translateY(-15vh);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  --distance-to: 0;
+  --distance-from: -15vh;
+  --opacity-to: 1;
+  --opacity-from: 0;
+  animation: slideDown 500ms linear both;
 }
 
 @keyframes barSlideUp {
@@ -504,7 +504,7 @@ img {
     transform: translateY(0);
   }
   100% {
-    transform: translateY(-15vh);
+    transform: translateY(var(--distance));
     opacity: 0;
   }
 }
@@ -691,29 +691,41 @@ img {
 
 /************ New Game Button Animations  ************/
 .slide-down {
+  --distance-to: 3em;
+  --distance-from: -3em;
+  --opacity-to: 1;
+  --opacity-from: 0;
   animation: slideDown var(--newGame-button-duration)
     var(--newGame-button-delay) forwards;
 }
 
 @keyframes slideDown {
+  from {
+    transform: translateY(var(--distance-from));
+    opacity: var(--opacity-from);
+  }
   to {
-    transform: translateY(3em);
-    opacity: 1;
+    transform: translateY(var(--distance-to));
+    opacity: var(--opacity-to);
   }
 }
 
 .slide-down-reverse {
-  animation: slideDownReverse var(--newGame-button-duration) forwards;
+  --distance-to: -3em;
+  --distance-from: 3em;
+  --opacity-to: 0;
+  --opacity-from: 1;
+  animation: slideUp var(--newGame-button-duration) forwards;
 }
 
-@keyframes slideDownReverse {
+@keyframes slideUp {
   from {
-    transform: translateY(3em);
-    opacity: 1;
+    transform: translateY(var(--distance-from));
+    opacity: var(--opacity-from);
   }
   to {
-    transform: translateY(-3em);
-    opacity: 0;
+    transform: translateY(var(--distance-to));
+    opacity: var(--opacity-to);
   }
 }
 

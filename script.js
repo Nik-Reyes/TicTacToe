@@ -494,10 +494,10 @@ setInterval(() => {
       }, idx * 100);
       idx++;
     }
-  }, 2000);
+  }, 1500);
 
   function handleLastAnimation(e) {
-    if (e.animationName === "barSlideDown") {
+    if (e.animationName === "slideDown") {
       bars.forEach((bar) => {
         bar.classList.remove("bar-slide-up", "bar-slide-down");
       });
@@ -506,4 +506,4 @@ setInterval(() => {
   }
 
   bars[0].addEventListener("animationend", handleLastAnimation);
-}, Math.floor(Math.random() * 20000) + 5000);
+}, 12000);
