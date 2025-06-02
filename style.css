@@ -485,7 +485,7 @@ img {
 }
 
 .bar-slide-down {
-  animation: barSlideDown 500ms 1000ms linear both;
+  animation: barSlideDown 500ms linear both;
 }
 
 @keyframes barSlideDown {

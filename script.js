@@ -487,12 +487,14 @@ setInterval(() => {
   });
 
   let idx = 0;
-  for (let i = bars.length - 1; i >= 0; i--) {
-    setTimeout(() => {
-      bars[i].classList.add("bar-slide-down");
-    }, idx * 100);
-    idx++;
-  }
+  setTimeout(() => {
+    for (let i = bars.length - 1; i >= 0; i--) {
+      setTimeout(() => {
+        bars[i].classList.add("bar-slide-down");
+      }, idx * 100);
+      idx++;
+    }
+  }, 2000);
 
   function handleLastAnimation(e) {
     if (e.animationName === "barSlideDown") {
@@ -504,4 +506,4 @@ setInterval(() => {
   }
 
   bars[0].addEventListener("animationend", handleLastAnimation);
-}, Math.floor(Math.random() * 20000) + 1000);
+}, Math.floor(Math.random() * 20000) + 10000);
