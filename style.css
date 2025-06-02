@@ -561,6 +561,23 @@ img {
   background-color: var(--primary-bg);
 }
 
+.decorative-text {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  font-size: 3px;
+  color: var(--primary-bg);
+  padding-top: 1em;
+}
+
+.bp-module-text {
+  justify-self: end;
+}
+
+.bp-match-text,
+.bp-integrity-text {
+  justify-self: center;
+}
+
 /*=========== ANIMATIONS  ===========*/
 
 /************ Board Cap Animations  ************/
