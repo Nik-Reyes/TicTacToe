@@ -184,7 +184,7 @@ const GameController = (() => {
   };
 })();
 
-const InterfaceController = (() => {
+const displayManager = (() => {
   const turnLabel = document.querySelector(".player-turn-display");
   const cap = document.querySelector(".board-cap");
   const backPanel = document.querySelector(".panel-backing");
@@ -196,171 +196,215 @@ const InterfaceController = (() => {
   const decorativeText = Array.from(
     document.querySelectorAll(".board-cap > div:nth-child(-n+4)")
   );
-  console.log(decorativeText);
+  const bars = Array.from(document.querySelectorAll(".bar"));
+
+  const printWinnerPanelText = () => {
+    let endIndex = 0;
+    const speed = 5;
+    const numberOfDecimals = 15;
+    let charsPerFrame = 1;
+    lastFrameTime = performance.now();
+
+    const moveSet = (() => {
+      const joinedMoves = InterfaceController.getMoveOrder()
+        .map(({ cellIdx, currentMarker }, i, arr) =>
+          i === arr.length - 1
+            ? `//move_${i}-${currentMarker}${".".repeat(
+                numberOfDecimals
+              )}cell_${cellIdx}`
+            : `//move_${i}-${currentMarker}${".".repeat(
+                numberOfDecimals
+              )}cell_${cellIdx}\n`
+        )
+        .join("");
+      return [joinedMoves];
+    })();
+
+    let message =
+      `//assets retrieved\n//term_attempt_1\n//term_attempt_2\n//term_attempt_3\n//term_success\n${moveSet}`.toUpperCase();
+
+    return (typewriter = () => {
+      const frameStart = performance.now();
+      if (frameStart - lastFrameTime > 20) {
+        charsPerFrame = Math.min(charsPerFrame + 1, 5);
+      }
+
+      endIndex = Math.min(endIndex + charsPerFrame, message.length);
+      winnerPanelText.innerText = message.substring(0, endIndex);
+      lastFrameTime = frameStart;
+
+      if (endIndex++ !== message.length) {
+        setTimeout(typewriter, speed);
+      } else {
+        [winnerLabel, winnerPanelText].forEach((element) =>
+          element.classList.add("blink")
+        );
+        winnerLabel.addEventListener("animationend", () => {
+          playAgainButton.disabled = false;
+        });
+      }
+    });
+  };
+
+  const updateTurnDisplay = () => {
+    turnLabel.innerText = `TURN: ${
+      GameController.getCurrentMarker() === "X"
+        ? playerOne.getName()
+        : playerTwo.getName()
+    }`;
+  };
+  const updateScoreDisplay = () => {
+    GameController.updateScore();
+    const winnerNum = parseInt(GameController.getWinner().at(-1));
+    const scoreLabel = document.querySelector(
+      `.player${winnerNum} .player-score`
+    );
+    scoreLabel.innerText =
+      winnerNum === 1
+        ? GameController.getScore().p1Score
+        : GameController.getScore().p2Score;
+  };
+  const hideHoverBox = (e) => {
+    e.target.querySelector(".hover-box").classList.add("hide");
+  };
+  const showHoverBoxes = () => {
+    document
+      .querySelectorAll(".hover-box")
+      .forEach((box) => box.classList.remove("hide"));
+  };
+  const animateEndGame = () => {
+    playAgainButton.disabled = true;
+    playAgainButton.classList.remove("hide");
+
+    const classes = [
+      { element: panelRow, _class: "slide-down" },
+      { element: winnerPanel, _class: "fade-in" },
+      { element: backPanel, _class: "expand-down" },
+      { element: cap, _class: "board-cap-animate" },
+    ];
+
+    classes.forEach(({ element, _class }) => {
+      element.classList.add(_class);
+    });
+
+    cap.addEventListener(
+      "animationend",
+      () => {
+        decorativeText.forEach((text) => {
+          text.classList.add("board-cap-fade-in");
+        });
+      },
+      { once: true }
+    );
+
+    backPanel.addEventListener(
+      "animationend",
+      () => {
+        printWinnerPanelText()();
+      },
+      { once: true }
+    );
+  };
+  const animateNewGame = () => {
+    const classes = [
+      { element: panelRow, _class: "slide-down-reverse" },
+      { element: winnerPanel, _class: "fade-in-reverse" },
+      { element: backPanel, _class: "expand-down-reverse" },
+      { element: capBacking, _class: "board-cap-animate-reverse" },
+    ];
+
+    classes.forEach(({ element, _class }) => {
+      element.classList.add(_class);
+    });
+
+    winnerPanel.addEventListener(
+      "animationend",
+      () => {
+        winnerPanelText.innerText = "";
+      },
+      { once: true }
+    );
+  };
+  const cleanUpAnimations = () => {
+    turnLabel.classList.add("board-cap-fade-in");
+    cap.classList.remove("board-cap-animate");
+    capBacking.classList.remove("board-cap-animate-reverse");
+    backPanel.classList.remove("expand-down");
+    backPanel.classList.remove("expand-down-reverse");
+    winnerPanel.classList.remove("fade-in");
+    winnerPanel.classList.remove("fade-in-reverse");
+    playAgainButton.classList.add("hide");
+    panelRow.classList.remove("slide-down");
+    panelRow.classList.remove("slide-down-reverse");
+    winnerLabel.classList.remove("blink");
+    winnerPanelText.classList.remove("blink");
+
+    decorativeText.forEach((text) => {
+      text.classList.remove("board-cap-fade-in");
+    });
+
+    turnLabel.addEventListener(
+      "animationend",
+      () => {
+        turnLabel.classList.remove("board-cap-fade-in");
+      },
+      { once: true }
+    );
+  };
+  const updateWinnerLabel = () => {
+    winnerLabel.innerText =
+      GameController.getWinner() === ""
+        ? "IT'S A DRAW"
+        : `WINNER: ${GameController.getWinner()}`;
+  };
+
+  //ANIMATE BARS IMMEDIATELY
+  (() => {
+    setInterval(() => {
+      bars.forEach((bar, i) => {
+        setTimeout(() => {
+          bar.classList.add("bar-slide-up");
+        }, i * 100);
+      });
+
+      let idx = 0;
+      setTimeout(() => {
+        for (let i = bars.length - 1; i >= 0; i--) {
+          setTimeout(() => {
+            bars[i].classList.add("bar-slide-down");
+          }, idx * 100);
+          idx++;
+        }
+      }, 1500);
+
+      function handleLastAnimation(e) {
+        if (e.animationName === "slideDown") {
+          bars.forEach((bar) => {
+            bar.classList.remove("bar-slide-up", "bar-slide-down");
+          });
+          bars[0].removeEventListener("animationend", handleLastAnimation);
+        }
+      }
+
+      bars[0].addEventListener("animationend", handleLastAnimation);
+    }, 12000);
+  })();
+
+  return {
+    updateTurnDisplay,
+    showHoverBoxes,
+    animateNewGame,
+    cleanUpAnimations,
+    animateEndGame,
+    updateWinnerLabel,
+    updateScoreDisplay,
+    hideHoverBox,
+  };
+})();
+
+const InterfaceController = (() => {
   let moveOrder = [];
   let clickedCellIdx = null;
-  const displayManager = {
-    printWinnerPanelText: () => {
-      let endIndex = 0;
-      const speed = 5;
-      const numberOfDecimals = 15;
-      let charsPerFrame = 1;
-      lastFrameTime = performance.now();
-
-      const moveSet = (() => {
-        const joinedMoves = moveOrder
-          .map(({ cellIdx, currentMarker }, i, arr) =>
-            i === arr.length - 1
-              ? `//move_${i}-${currentMarker}${".".repeat(
-                  numberOfDecimals
-                )}cell_${cellIdx}`
-              : `//move_${i}-${currentMarker}${".".repeat(
-                  numberOfDecimals
-                )}cell_${cellIdx}\n`
-          )
-          .join("");
-
-        moveOrder = [];
-        return [joinedMoves];
-      })();
-
-      let message =
-        `//assets retrieved\n//term_attempt_1\n//term_attempt_2\n//term_attempt_3\n//term_success\n${moveSet}`.toUpperCase();
-
-      return (typewriter = () => {
-        const frameStart = performance.now();
-        if (frameStart - lastFrameTime > 20) {
-          charsPerFrame = Math.min(charsPerFrame + 1, 5);
-        }
-
-        endIndex = Math.min(endIndex + charsPerFrame, message.length);
-        winnerPanelText.innerText = message.substring(0, endIndex);
-        lastFrameTime = frameStart;
-
-        if (endIndex++ !== message.length) {
-          setTimeout(typewriter, speed);
-        } else {
-          [winnerLabel, winnerPanelText].forEach((element) =>
-            element.classList.add("blink")
-          );
-          winnerLabel.addEventListener("animationend", () => {
-            playAgainButton.disabled = false;
-          });
-        }
-      });
-    },
-    updateTurnDisplay: () => {
-      turnLabel.innerText = `TURN: ${
-        GameController.getCurrentMarker() === "X"
-          ? playerOne.getName()
-          : playerTwo.getName()
-      }`;
-    },
-    updateScoreDisplay: () => {
-      GameController.updateScore();
-      const winnerNum = parseInt(GameController.getWinner().at(-1));
-      const scoreLabel = document.querySelector(
-        `.player${winnerNum} .player-score`
-      );
-      scoreLabel.innerText =
-        winnerNum === 1
-          ? GameController.getScore().p1Score
-          : GameController.getScore().p2Score;
-    },
-    hideHoverBox: (e) => {
-      e.target.querySelector(".hover-box").classList.add("hide");
-    },
-    showHoverBoxes: () => {
-      document
-        .querySelectorAll(".hover-box")
-        .forEach((box) => box.classList.remove("hide"));
-    },
-    animateEndGame: () => {
-      playAgainButton.disabled = true;
-      playAgainButton.classList.remove("hide");
-
-      const classes = [
-        { element: panelRow, _class: "slide-down" },
-        { element: winnerPanel, _class: "fade-in" },
-        { element: backPanel, _class: "expand-down" },
-        { element: cap, _class: "board-cap-animate" },
-      ];
-
-      classes.forEach(({ element, _class }) => {
-        element.classList.add(_class);
-      });
-
-      cap.addEventListener(
-        "animationend",
-        () => {
-          decorativeText.forEach((text) => {
-            text.classList.add("board-cap-fade-in");
-          });
-        },
-        { once: true }
-      );
-
-      backPanel.addEventListener(
-        "animationend",
-        () => {
-          displayManager.printWinnerPanelText()();
-        },
-        { once: true }
-      );
-    },
-    animateNewGame: () => {
-      const classes = [
-        { element: panelRow, _class: "slide-down-reverse" },
-        { element: winnerPanel, _class: "fade-in-reverse" },
-        { element: backPanel, _class: "expand-down-reverse" },
-        { element: capBacking, _class: "board-cap-animate-reverse" },
-      ];
-
-      classes.forEach(({ element, _class }) => {
-        element.classList.add(_class);
-      });
-
-      winnerPanel.addEventListener(
-        "animationend",
-        () => {
-          winnerPanelText.innerText = "";
-        },
-        { once: true }
-      );
-    },
-    cleanUpAnimations: () => {
-      turnLabel.classList.add("board-cap-fade-in");
-      cap.classList.remove("board-cap-animate");
-      capBacking.classList.remove("board-cap-animate-reverse");
-      backPanel.classList.remove("expand-down");
-      backPanel.classList.remove("expand-down-reverse");
-      winnerPanel.classList.remove("fade-in");
-      winnerPanel.classList.remove("fade-in-reverse");
-      playAgainButton.classList.add("hide");
-      panelRow.classList.remove("slide-down");
-      panelRow.classList.remove("slide-down-reverse");
-      winnerLabel.classList.remove("blink");
-      winnerPanelText.classList.remove("blink");
-
-      decorativeText.forEach((text) => {
-        text.classList.remove("board-cap-fade-in");
-      });
-
-      turnLabel.addEventListener(
-        "animationend",
-        () => {
-          turnLabel.classList.remove("board-cap-fade-in");
-        },
-        { once: true }
-      );
-    },
-    updateWinnerLabel: () => {
-      winnerLabel.innerText =
-        GameController.getWinner() === ""
-          ? "IT'S A DRAW"
-          : `WINNER: ${GameController.getWinner()}`;
-    },
-  };
 
   const appendMarker = (e) => {
     const marker = document.createElement("div");
@@ -413,6 +457,7 @@ const InterfaceController = (() => {
     GameController.intializeGame(playerOne);
     displayManager.updateTurnDisplay();
     clearMarkers();
+    moveOrder = [];
     setTimeout(() => {
       displayManager.showHoverBoxes();
       playingBoard.addEventListener("click", handleCellClick);
@@ -466,9 +511,12 @@ const InterfaceController = (() => {
     if (!gameOver()) updateMarker();
   };
 
+  const getMoveOrder = () => moveOrder;
+
   return {
     handleCellClick,
     handleNewGame,
+    getMoveOrder,
   };
 })();
 
@@ -477,33 +525,3 @@ const playingBoard = document.querySelector(".board");
 playingBoard.addEventListener("click", InterfaceController.handleCellClick);
 const playAgainButton = document.querySelector(".play-again");
 playAgainButton.addEventListener("click", InterfaceController.handleNewGame);
-
-const bars = Array.from(document.querySelectorAll(".bar"));
-setInterval(() => {
-  bars.forEach((bar, i) => {
-    setTimeout(() => {
-      bar.classList.add("bar-slide-up");
-    }, i * 100);
-  });
-
-  let idx = 0;
-  setTimeout(() => {
-    for (let i = bars.length - 1; i >= 0; i--) {
-      setTimeout(() => {
-        bars[i].classList.add("bar-slide-down");
-      }, idx * 100);
-      idx++;
-    }
-  }, 1500);
-
-  function handleLastAnimation(e) {
-    if (e.animationName === "slideDown") {
-      bars.forEach((bar) => {
-        bar.classList.remove("bar-slide-up", "bar-slide-down");
-      });
-      bars[0].removeEventListener("animationend", handleLastAnimation);
-    }
-  }
-
-  bars[0].addEventListener("animationend", handleLastAnimation);
-}, 12000);
