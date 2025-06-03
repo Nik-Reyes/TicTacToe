@@ -129,9 +129,6 @@ img {
   justify-self: end;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  @media only screen and (min-width: 645px) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
 }
 
 .header-bar > div:not(:last-child) {
@@ -152,9 +149,6 @@ img {
   justify-self: center;
   white-space: nowrap;
   display: none;
-  @media only screen and (min-width: 645px) {
-    display: block;
-  }
 }
 
 .barcode-wrapper {
@@ -209,16 +203,6 @@ img {
   padding: 1rem;
   max-width: 43.75rem;
   justify-content: center;
-
-  @media only screen and (min-width: 550px) {
-    grid-template-columns: auto 1fr clamp(
-        3.7188rem,
-        1.2969rem + 7.0455vw,
-        4.6875rem
-      );
-
-    grid-template-rows: auto auto 1fr;
-  }
 }
 
 .player-ui {
@@ -342,10 +326,6 @@ img {
   color: var(--winner-panel-color);
   font-size: clamp(0.4375rem, -1.925rem + 14vw, 0.875rem);
   opacity: 0;
-
-  @media only screen and (min-width: 320px) {
-    font-size: clamp(0.875rem, 0.2528rem + 3.1111vw, 1.75rem);
-  }
 }
 
 .play-again {
@@ -382,9 +362,6 @@ img {
   color: var(--win-color);
   overflow: hidden;
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 4% 100%, 0% 95%);
-  @media only screen and (min-width: 570px) {
-    font-size: clamp(0.9375rem, -0.1312rem + 3vw, 1.3125rem);
-  }
 }
 
 .board {
@@ -433,19 +410,6 @@ img {
   padding: 0.25rem;
   gap: 0.25rem;
   background-color: var(--primary-bg);
-
-  @media only screen and (min-width: 550px) {
-    grid-column: 3/4;
-    grid-row: 3;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-left: 0.625rem;
-  }
-
-  @media only screen and (min-width: 340px) {
-    padding: 0.5rem;
-    gap: 0.5rem;
-  }
 }
 
 .array-tracker > div {
@@ -455,10 +419,6 @@ img {
   flex: 1;
   aspect-ratio: 1;
   outline: 1px dashed var(--cyber-green);
-
-  @media only screen and (min-width: 550px) {
-    flex: initial;
-  }
 }
 
 .array-tracker > div:has(span.marked) {
@@ -792,5 +752,60 @@ img {
   }
   100% {
     opacity: 1;
+  }
+}
+
+/*=========== DECORATIVE TEXT AND LOGOS  ===========*/
+
+@media only screen and (min-width: 320px) {
+  .winner-label > span {
+    font-size: clamp(0.875rem, 0.2528rem + 3.1111vw, 1.75rem);
+  }
+}
+
+@media only screen and (min-width: 340px) {
+  .array-tracker {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+}
+
+@media only screen and (min-width: 550px) {
+  .main {
+    grid-template-columns: auto 1fr clamp(
+        3.7188rem,
+        1.2969rem + 7.0455vw,
+        4.6875rem
+      );
+
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .array-tracker > div {
+    flex: initial;
+  }
+
+  .array-tracker {
+    grid-column: 3/4;
+    grid-row: 3;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 0.625rem;
+  }
+}
+
+@media only screen and (min-width: 570px) {
+  .winner-panel {
+    font-size: clamp(0.9375rem, -0.1312rem + 3vw, 1.3125rem);
+  }
+}
+
+@media only screen and (min-width: 645px) {
+  .header-bar {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .certified-text {
+    display: block;
   }
 }
