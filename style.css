@@ -169,6 +169,7 @@ img {
   justify-self: center;
   padding: 0px 1rem;
   background-color: var(--primary-bg);
+  font-family: "Saira Condensed Medium";
 }
 
 .game-title span {
